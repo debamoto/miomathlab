@@ -1374,7 +1374,8 @@ function renderGrown(){
   <div id="bkbox"></div>
   <h2 class="h2">Read-aloud voice</h2>
   <p class="muted">Voices marked Premium or Enhanced sound far more natural. If you don’t see one, download it on the iPad: Settings, Accessibility, Spoken Content, Voices, English, then tap a voice like Ava, Zoe, or Samantha and download the Premium or Enhanced version. Then close and reopen this app.</p>
-  ${canSpeak()?`<div class="srow"><select id="voicesel" class="numin" style="width:auto;min-width:240px;font-size:18px;padding:8px 10px;text-align:left">${englishVoices().map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}"${sayVoice&&v.name===sayVoice.name?' selected':''}>${v.name} (${v.lang})</option>`).join('')||'<option>No voices found yet</option>'}</select><button class="btn small" id="voicetest">Try it</button></div>
+  <p class="muted" id="voicecount"></p>
+  ${canSpeak()?`<div class="srow"><select id="voicesel" class="numin" style="width:auto;min-width:240px;font-size:18px;padding:8px 10px;text-align:left">${englishVoices().map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}"${sayVoice&&v.name===sayVoice.name?' selected':''}>${v.name} (${v.lang})</option>`).join('')||'<option>No voices found yet</option>'}</select><button class="btn small" id="voicetest">Try it</button><button class="btn small ghost" id="voicerefresh">Refresh list</button></div>
   <div class="srow" style="font-size:18px">Speed ${[['.8','Slower'],['.92','Normal'],['1.05','Faster']].map(([r,l])=>`<button class="schoice" data-rate="${r}" aria-pressed="${String(S.rate||.92)===r||(!S.rate&&r==='.92')}">${l}</button>`).join('')}</div>`:'<p>Read-aloud isn’t available in this browser.</p>'}
   <h2 class="h2">Settings</h2><p class="muted">Step-by-step help. <b>By skill</b> (recommended) fades the steps as she moves up the mastery ladder. <b>Always</b> shows full steps on every problem. <b>Off</b> has her plan on her own and explain afterward.</p>
   <div class="srow" style="font-size:18px">${[['auto','By skill'],['always','Always'],['off','Off']].map(([v,l])=>`<button class="schoice" data-mode="${v}" aria-pressed="${S.stepMode===v}">${l}</button>`).join('')}</div>
@@ -1397,6 +1398,14 @@ function renderGrown(){
     };
   };
   const vsel=$('#voicesel');
+  const fillVoices=()=>{const el=$('#voicesel');if(!el)return;const vs=englishVoices();
+    el.innerHTML=vs.map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}"${sayVoice&&v.name===sayVoice.name?' selected':''}>${v.name} (${v.lang})</option>`).join('')||'<option>No voices found yet</option>';
+    const all=(()=>{try{return speechSynthesis.getVoices().length}catch(e){return 0}})(),good=vs.filter(v=>/premium|enhanced/i.test(v.name)).length;
+    const c=$('#voicecount');if(c)c.textContent=`This app can see ${vs.length} English ${vs.length===1?'voice':'voices'} (${good} Premium or Enhanced) out of ${all} on this iPad. Apple decides which voices websites can use, so some downloaded voices may not appear here.`};
+  fillVoices();
+  try{speechSynthesis.addEventListener('voiceschanged',()=>{pickVoice();fillVoices()})}catch(e){}
+  setTimeout(fillVoices,800);setTimeout(fillVoices,2500);
+  const vr=$('#voicerefresh');if(vr)vr.onclick=()=>{try{speechSynthesis.getVoices()}catch(e){}pickVoice();fillVoices();speak('Voice list refreshed.',true)};
   if(vsel){vsel.onchange=()=>{S.voiceName=vsel.value;save();pickVoice();speak('Hi Mio! Let’s break it down.',true)};
     $('#voicetest').onclick=()=>speak('Hi Mio! Kelp ate three eighths of a pizza. Mochi ate two sixths. Who ate more?',true);
     app.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>{S.rate=parseFloat(b.dataset.rate);save();app.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',x===b));speak('This is how fast I will read.',true)});}
