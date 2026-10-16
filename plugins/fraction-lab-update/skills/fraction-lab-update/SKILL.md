@@ -4,7 +4,7 @@ description: >
   Update, extend, and ship Mio's Fraction Lab, the iPad fractions practice app Deb
   built for her daughter Mio (kawaii characters, real-world problems, "Understand
   the problem, break it down, then prove it" steps). Edits the single-file app,
-  keeps the Claude artifact and the GitHub Pages site (debamoto/fraction-lab) in
+  keeps the Claude artifact and the GitHub Pages site (debamoto/miomathlab) in
   sync, and adds new content: new problem types, real-world scenes, characters,
   steps, or a new math unit. Use this whenever Deb mentions the fraction app,
   Fraction Lab, Mio's math app, or says things like "add a new problem type,"
@@ -23,9 +23,9 @@ both places Mio might open it: the Claude artifact and the GitHub Pages site.
 - **Claude artifact**: https://claude.ai/artifact/YTy51GvrZ5pBnGwwDBZpt2
   (same artifact also appears as https://claude.ai/code/artifact/fecf30b4-ba57-460b-8c44-887b1cd6a9cb;
   Deb's comments arrive on that URL)
-- **GitHub repo**: https://github.com/debamoto/fraction-lab
-- **Local folder** (once cloned): `/Users/debkawamoto/Documents/GitHub/fraction-lab`
-- **Live site**: https://debamoto.github.io/fraction-lab/
+- **GitHub repo**: https://github.com/debamoto/miomathlab
+- **Local folder** (once cloned): `/Users/debkawamoto/Documents/GitHub/miomathlab`
+- **Live site**: https://debamoto.github.io/miomathlab/
 - **Who it's for**: Mio, 4th grade, Illustrative Mathematics Grade 4 Unit 2
   (equivalent fractions and comparing). Strong visual thinker; reading is hard,
   so everything is read aloud and explanations are taps, numbers, or drawings,
@@ -83,7 +83,7 @@ python3 scripts/make_site.py <artifact file> <output folder>/index.html
 ```
 - If the local repo is mounted: copy `index.html` in, `git add index.html`,
   commit with a message about the effect ("Add farmers-market decimal scenes"),
-  then ask Deb to run `cd /Users/debkawamoto/Documents/GitHub/fraction-lab && git push origin main`.
+  then ask Deb to run `cd /Users/debkawamoto/Documents/GitHub/miomathlab && git push origin main`.
 - If not mounted: give Deb the new `index.html` (present_files) and the steps:
   repo, Add file, Upload files, drop it in, Commit changes.
 - `sw.js`, `manifest.webmanifest`, and `icons/` live at the repo root and rarely

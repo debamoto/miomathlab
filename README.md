@@ -14,6 +14,6 @@ This repo is also a Claude plugin marketplace, so the instructions for updating 
 
 Install in Claude Code:
 
-    /plugin install fraction-lab-update --marketplace debamoto/fraction-lab
+    /plugin install fraction-lab-update --marketplace debamoto/miomathlab
 
 Edit the skill here and push. Claude and Claude Code pick up the change on their next sync.

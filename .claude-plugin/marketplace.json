@@ -1,0 +1,12 @@
+{
+  "name": "debamoto-plugins",
+  "description": "Deb's plugins, starting with the Fraction Lab update workflow",
+  "owner": { "name": "Deb Kawamoto" },
+  "plugins": [
+    {
+      "name": "fraction-lab-update",
+      "source": "./plugins/fraction-lab-update",
+      "description": "Update, extend, and ship Mio's Fraction Lab iPad app"
+    }
+  ]
+}

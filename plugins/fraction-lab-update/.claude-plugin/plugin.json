@@ -1,0 +1,5 @@
+{
+  "name": "fraction-lab-update",
+  "description": "Update, extend, and ship Mio's Fraction Lab iPad app: edit the app, keep the Claude artifact and GitHub Pages site in sync, and add new problems, scenes, and characters.",
+  "author": { "name": "Deb Kawamoto" }
+}
