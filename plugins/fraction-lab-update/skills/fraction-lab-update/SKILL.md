@@ -32,6 +32,14 @@ both places Mio might open it: the Claude artifact and the GitHub Pages site.
   never long typing. Known mix-up: adds the same number to top and bottom
   (wrote 6/11 for 3/8) and struggles with fractions greater than 1.
 
+## Read the learning brief first
+
+`GOALS.md` at the repo root says what the app is for (independent mastery, not
+engagement), how the mastery ladder works, and how to choose what to build.
+Every change should move Mio up the ladder. The weekly scheduled update follows
+`notes/WEEKLY_TASK.md`, and Mio's data lives only in the private repo
+`debamoto/miomathlab-progress`, never in this public repo.
+
 ## Two versions of the same file
 
 | | Artifact version | Site version (`index.html`) |

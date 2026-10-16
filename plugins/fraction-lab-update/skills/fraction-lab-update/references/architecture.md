@@ -17,13 +17,21 @@ this order:
 | session | `guideLine`, `setGuide`, `askHTML`, `sayPrompt`, `hintHTML`, `answered`, `updateGo`, `renderProblem`, `onGo` |
 | step-by-step coach | `buildSteps()` returns the "Break it down" steps per type; `renderSteps()` is the step engine |
 | explain | used only when step-by-step is off: `strategiesFor`, `workHTML`, `showExplain`, drawing pad |
-| checking | `evaluateAnswer` (feedback + proof), `evaluateExplain`, `adapt` (levels), `summary`, `check` |
+| checking | `evaluateAnswer` (feedback + proof), `evaluateExplain`, `adapt` (difficulty levels 1 to 3), `summary`, `check` (stars, challenge bonus, records mastery) |
+| mastery ladder | `STAGES`, `mst(skill)`, `scaffoldFor(skill)` (full / plan / none), `recordMastery` (promotion and demotion rules), `rollup` (daily totals in `S.days`, kept forever), `planMission` (focus skills, due reviews, challenge when ≥90%), `seedMastery` (one-time replay of old history) |
 | screens | `renderHome`, `renderEnd`, `renderGrown` (grown-up view: stats, backup code, voice, settings) |
+
+## Saved state (`fractionlab.v1`)
+
+`levels`, `runs` (difficulty), `history` (latest 60 problems, detailed),
+`mastery[skill] = {stage, recent[], since, reviewDue}`, `days[YYYY-MM-DD][skill]
+= {n, c, ind, x, sl, add, h}`, `stageLog[]`, `stepMode` ('auto' | 'always' |
+'off'), stars, friends, streak, voice settings. The grown-up view's "Copy
+progress code" exports all of it except drawings as `FL1:` + base64 JSON.
 
 ## Problem object `P`
 
-Built by a generator, then `dress(P)` adds `ctxKey`, `ctx`, `who` (character
-ids), `names`. Common fields: `type`, `skill`, `level`, and per type:
+Built by a generator, then `dress(P)` adds `ctxKey`, `ctx`, `who`, `names`; `renderProblem` adds `level`, `challenge`, `review`, `scaffold`. Common fields: `type`, `skill`, `level`, and per type:
 compare `a,b,answer(> < =)`; benchmark `a,t,answer`; missing
 `left,right,missing,answer`; equiv `base,opts[{f,ok,tag}]`; findtwo `base`;
 story `fs,ask,answer(index string)`.
@@ -57,7 +65,7 @@ mission list; consider a mission picker on the home screen.
 - Every problem is a real-world scene acted out by the characters, not abstract.
 - Kawaii original characters (Mochi, Kelp, Bolt, Hazel, Rio, Dart), unlocked by
   total stars; they react to her answers.
-- Step-by-step "Break it down" on by default; each step checked with a nudge.
+- Step-by-step "Break it down" fades per skill with the mastery ladder (GOALS.md); each step checked with a nudge.
 - Mission trail uses green freeway-sign mile markers with a muted mint arrow
   (#5fbf8f) and white number; cleared signs get a white check and gold ring.
 - Home page fits one iPad screen (two columns); other pages may scroll.
