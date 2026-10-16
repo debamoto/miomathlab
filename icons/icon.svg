@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="#141312"/><g transform="translate(10 14) scale(0.8333333333333334)">
+    <path d="M60 22 q-6 -12 -16 -9 q4 9 16 9z M60 22 q6 -12 16 -9 q-4 9 -16 9z" fill="#ffb7c9" stroke="#3b2b2b" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M16 78 C16 44 36 24 60 24 C84 24 104 44 104 78 C104 96 86 104 60 104 C34 104 16 96 16 78Z" fill="#fff6f1" stroke="#3b2b2b" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M60 25.5 C83 26 102.5 45 102.5 78 C102.5 95 85 102.5 60 102.5Z" fill="#ffd9e2"/>
+    <path d="M60 26 L60 102" stroke="#3b2b2b" stroke-width="2" stroke-dasharray="4 5" opacity=".3"/>
+    <ellipse cx="40" cy="77" rx="5.5" ry="3.3" fill="#ff9fb4" opacity=".85"/><ellipse cx="80" cy="77" rx="5.5" ry="3.3" fill="#ff9fb4" opacity=".85"/><path d="M41 72 q5 -8 10 0" fill="none" stroke="#3b2b2b" stroke-width="3.2" stroke-linecap="round"/><path d="M69 72 q5 -8 10 0" fill="none" stroke="#3b2b2b" stroke-width="3.2" stroke-linecap="round"/><path d="M54 79 q6 9 12 0 z" fill="#ff6f8f" stroke="#3b2b2b" stroke-width="2.4" stroke-linejoin="round"/></g></svg>

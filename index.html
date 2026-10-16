@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fraction Lab">
+<meta name="theme-color" content="#141312">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<title>Mio's Fraction Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#141312;--surface:#1d1b19;--surface2:#2a2724;--line:#3d3833;
+  --ink:#f2efe9;--muted:#a8a29a;
+  --orange:#f0a457;--teal:#3fbdbd;--purple:#c98ab8;--red:#ff7a8f;--on-accent:#141312;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-theme="dark"]{
+  --bg:#141312;--surface:#1d1b19;--surface2:#2a2724;--line:#3d3833;
+  --ink:#f2efe9;--muted:#a8a29a;
+  --orange:#f0a457;--teal:#3fbdbd;--purple:#c98ab8;--red:#ff7a8f;--on-accent:#141312;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#faf8f4;--surface:#ffffff;--surface2:#ece6dc;--line:#d3c9ba;
+    --ink:#1c1917;--muted:#57534e;
+    --orange:#c2661a;--teal:#0f5e5e;--purple:#7a3b6b;--red:#a3172e;--on-accent:#ffffff;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#faf8f4;--surface:#ffffff;--surface2:#ece6dc;--line:#d3c9ba;
+  --ink:#1c1917;--muted:#57534e;
+  --orange:#c2661a;--teal:#0f5e5e;--purple:#7a3b6b;--red:#a3172e;--on-accent:#ffffff;
+  color-scheme:light;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:20px;line-height:1.5;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+main{max-width:780px;margin:0 auto;padding:20px 22px 56px}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-user-select:none;user-select:none}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+
+/* type */
+.title{font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:clamp(46px,9vw,76px);line-height:.95;margin:18px 0 6px;letter-spacing:-.01em}
+.sub{font-size:22px;color:var(--muted);margin:0 0 28px}
+.h2{font-size:24px;font-weight:700;margin:28px 0 8px}
+.q{font-size:26px;font-weight:700;margin:6px 0 18px;line-height:1.35}
+.kicker{color:var(--muted);font-size:17px;margin:4px 0 0}
+
+/* fractions */
+.frac{display:inline-flex;flex-direction:column;align-items:center;font-weight:700;line-height:1.08;vertical-align:middle;font-variant-numeric:tabular-nums;margin:0 .08em}
+.frac>span{padding:0 .16em;min-width:1.1em;text-align:center}
+.frac .d{border-top:.075em solid currentColor}
+.big{font-size:clamp(46px,9vw,64px)}
+.mid{font-size:30px}
+.sm{font-size:22px}
+.numin{width:2.3em;font:inherit;font-weight:700;text-align:center;background:var(--surface2);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:0;margin:2px 0;-moz-appearance:textfield}
+.numin:focus{border-color:var(--teal);outline:none}
+.numin.wide{width:3.2em}
+.inline-in{font-size:26px;vertical-align:middle}
+
+/* buttons */
+.btn{min-height:60px;padding:12px 26px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font-weight:700;font-size:20px}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:var(--on-accent)}
+.btn.ghost{background:transparent}
+.btn.small{min-height:44px;padding:6px 16px;font-size:17px}
+.btn:disabled{opacity:.38;cursor:default}
+.btn.wide{width:100%}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.actions .btn.primary{flex:1 1 240px}
+.iconbtn{width:56px;height:56px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:22px;display:grid;place-items:center;flex:none}
+
+/* top bar */
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.prog{flex:1;display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.prog li{flex:1;height:12px;border-radius:6px;background:var(--surface2)}
+.prog li.done{background:var(--teal)}
+.prog li.miss{background:var(--purple)}
+.prog li.now{background:var(--orange)}
+.leave{font-size:15px;font-weight:700;width:auto;padding:0 14px;border-radius:28px}
+
+/* ask */
+.cmp{display:flex;align-items:center;justify-content:center;gap:clamp(10px,3vw,26px);flex-wrap:wrap;margin:10px 0 22px}
+.slot{min-width:1.3em;height:1.3em;border:3px dashed var(--line);border-radius:14px;display:grid;place-items:center;color:var(--orange);font-weight:700}
+.slot.filled{border-style:solid;border-color:var(--orange)}
+.vs{color:var(--muted);font-weight:500;font-size:.6em}
+.whole{font-weight:700}
+.choices{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.choice{min-width:96px;min-height:80px;padding:8px 22px;border-radius:18px;border:2px solid var(--line);background:var(--surface);font-weight:700;font-size:24px}
+.choice.sym{font-size:44px;line-height:1}
+.choice[aria-pressed="true"]{border-color:var(--orange);background:var(--surface2);color:var(--orange)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.tile{min-height:120px;border-radius:18px;border:2px solid var(--line);background:var(--surface);padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.tile[aria-pressed="true"]{border-color:var(--orange);background:var(--surface2)}
+.tile .nm{font-size:19px;font-weight:700}
+.story{font-size:22px;margin-bottom:6px}
+.lines{list-style:none;padding:0;margin:0 0 6px;font-size:22px}
+.lines li{margin:6px 0}
+
+/* hint */
+.hintrow{display:flex;justify-content:center;margin-top:22px}
+.hintbox:not(:empty){margin-top:16px;padding:16px 18px;border-left:4px solid var(--teal);background:var(--surface)}
+.bars{width:100%;height:auto;display:block;margin:10px 0}
+.seg{fill:var(--surface2);stroke:var(--bg);stroke-width:1.5}
+.seg.thin{stroke-width:.35}
+.seg.on.c0{fill:var(--orange)}.seg.on.c1{fill:var(--teal)}.seg.on.c2{fill:var(--purple)}
+.wholebox{fill:none;stroke:var(--muted);stroke-width:1.5}
+.bl{fill:var(--ink);font:700 18px "DM Sans",system-ui,sans-serif}
+.mk{stroke:var(--ink);stroke-dasharray:5 4;stroke-width:2}
+.mkl{fill:var(--ink);font:700 16px "DM Sans",system-ui,sans-serif}
+
+/* explain */
+.explain{margin-top:30px;padding-top:6px;border-top:2px solid var(--line)}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.chip{text-align:left;min-height:64px;padding:12px 16px 12px 54px;border-radius:16px;border:2px solid var(--line);background:var(--surface);position:relative}
+.chip::before{content:"";position:absolute;left:16px;top:50%;width:24px;height:24px;margin-top:-12px;border-radius:7px;border:2px solid var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--teal)}
+.chip[aria-pressed="true"]::before{background:var(--teal);border-color:var(--teal)}
+.chip[aria-pressed="true"]::after{content:"";position:absolute;left:24px;top:50%;width:7px;height:13px;margin-top:-9px;border:solid var(--on-accent);border-width:0 3px 3px 0;transform:rotate(45deg)}
+.cl{display:block;font-weight:700;font-size:19px;line-height:1.3}
+.cs{display:block;color:var(--muted);font-size:16px;line-height:1.3;margin-top:2px}
+.work{margin-top:16px;padding:16px 18px;border-radius:16px;background:var(--surface);border:2px solid var(--line)}
+.work p{font-weight:700}
+.wrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0;font-size:24px}
+.wrow .nm{font-size:18px;font-weight:700;min-width:5.5em}
+.padwrap{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.pad{width:100%;height:300px;border-radius:14px;background:var(--bg);border:2px dashed var(--line);touch-action:none;display:block}
+.locked .pad{pointer-events:none}
+
+/* feedback */
+.fb{margin-top:28px;padding:20px 22px;border-radius:20px;background:var(--surface);border:2px solid var(--line)}
+.fb.good{border-color:var(--teal)}
+.fb.try{border-color:var(--purple)}
+.fbhead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.fbhead h2{margin:0;font-size:30px}
+.fb.good h2{color:var(--teal)}
+.fb.try h2{color:var(--purple)}
+.stars{font-size:34px;color:var(--orange);letter-spacing:4px}
+.stars .off{color:var(--line)}
+.pline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0}
+.pn{font-weight:700;min-width:5.5em}
+.op{color:var(--muted);font-size:26px}
+.ok{color:var(--teal);font-weight:700}
+.no{color:var(--red);font-weight:700}
+.note{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){
+  .pop{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+}
+
+/* home */
+.mission{padding:22px;border-radius:22px;background:var(--surface);border:2px solid var(--line)}
+.mission h2{margin:0 0 10px;font-size:26px}
+.checklist{list-style:none;padding:0;margin:0 0 20px}
+.checklist li{display:flex;align-items:center;gap:16px;padding:10px 0;font-size:20px;position:relative}
+.checklist li:not(:last-child)::before{content:"";position:absolute;left:21px;top:44px;bottom:-12px;border-left:4px dotted var(--line)}
+/* mile-marker signposts */
+.mm{position:relative;flex:none;width:46px;height:44px;display:block}
+.mm .plate{position:absolute;left:0;top:0;width:46px;height:32px;border-radius:7px;background:#006b3f;border:2px solid #ffffff;box-shadow:0 0 0 2px #006b3f;display:flex;align-items:center;justify-content:center;gap:2px;font-weight:700;font-size:16px;color:#ffffff;line-height:1;z-index:1}
+.mm .plate svg{width:15px;height:15px;flex:none}
+.mm::after{content:"";position:absolute;left:20px;top:32px;width:6px;height:14px;background:#8a8f94}
+.checklist li.ok .plate{background:#008a50;box-shadow:0 0 0 2px #008a50,0 0 0 5px #ffd36e}
+.checklist li.no .plate{opacity:.55}
+.checklist li.fin{color:var(--muted);font-weight:700}
+.mm.flag .plate{background:transparent;border:0;font-size:26px}
+.mm.flag::after{display:none}
+.checklist .st{margin-left:auto;color:var(--orange);letter-spacing:2px}
+/* page-load joy */
+.herowrap{position:relative;flex:none}
+.spark{position:absolute;left:50%;top:50%;width:16px;height:16px;background:#ffd36e;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;pointer-events:none}
+.spark.pk{background:#ffb7c9}.spark.tl{background:#9fe0dd}
+@media (prefers-reduced-motion:no-preference){
+  .homehero .ch{animation:heroIn .8s cubic-bezier(.3,1.6,.5,1) both,wiggle 1s ease-in-out .85s 1}
+  @keyframes heroIn{0%{transform:translateY(-50px) scale(.3);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-9deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-5deg)}}
+  .spark{animation:spark 1s ease-out .55s both}
+  @keyframes spark{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}25%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.1) rotate(120deg)}}
+  .homehero .title,.homehero .sub{animation:riseIn .6s ease-out both}
+  .homehero .sub{animation-delay:.15s}
+  @keyframes riseIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .trail li{animation:mmIn .5s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(.7s + var(--i) * .1s)}
+  @keyframes mmIn{from{opacity:0;transform:translateY(-12px) scale(.9)}to{opacity:1;transform:none}}
+}
+.record{font-size:20px;margin:22px 0 0}
+.record b{color:var(--orange)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.pgrid .btn{text-align:left;font-size:18px}
+.homefoot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:36px}
+.hold{position:relative;overflow:hidden;min-height:48px;padding:8px 18px;border-radius:24px;border:2px solid var(--line);background:transparent;color:var(--muted);font-size:16px}
+.hold::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--teal)}
+.hold.holding::after{width:100%;transition:width 1.2s linear}
+.toggle{min-height:48px;padding:8px 18px;border-radius:24px;border:2px solid var(--line);background:transparent;font-size:16px}
+
+/* end */
+.bigstars{font-family:"Cormorant Garamond",Georgia,serif;font-size:120px;font-weight:700;line-height:1;margin:10px 0;color:var(--orange)}
+.bigstars span{font-family:"DM Sans",system-ui,sans-serif;font-size:24px;color:var(--ink);font-weight:500;margin-left:10px}
+.badge{display:inline-block;padding:6px 16px;border-radius:20px;background:var(--orange);color:var(--on-accent);font-weight:700}
+
+/* grown-ups */
+.gtitle{font-size:28px;margin:0;flex:1}
+.tablewrap{overflow-x:auto}
+.gt{border-collapse:collapse;width:100%;font-size:17px;min-width:480px}
+.gt th,.gt td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+.gt th{color:var(--muted);font-weight:500}
+.watch{padding-left:22px}
+.watch li{margin:6px 0}
+.log{display:flex;flex-direction:column;gap:12px}
+.entry{padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);font-size:17px}
+.entry .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-weight:700}
+.entry .meta{color:var(--muted)}
+.entry img{max-width:240px;width:100%;border-radius:10px;margin-top:8px;border:1px solid var(--line)}
+/* kawaii characters */
+.ch{display:block}
+.chwrap{display:block}
+.guide{display:flex;align-items:flex-end;gap:14px;margin:10px 0 16px}
+.guide .ch{width:88px;height:88px;flex:none}
+.bubble{position:relative;background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:12px 18px;font-weight:700;font-size:19px;line-height:1.35}
+.bubble::before{content:"";position:absolute;left:-10px;bottom:18px;width:16px;height:16px;background:var(--surface);border-left:2px solid var(--line);border-bottom:2px solid var(--line);transform:rotate(45deg)}
+.homehero{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.homehero .ch{width:132px;height:132px;flex:none}
+.homehero .title{margin-top:0}
+.tile .ch{width:76px;height:76px}
+.fbhead .ch{width:92px;height:92px}
+.friends{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px}
+.friend{text-align:center;padding:12px 8px;border-radius:20px;background:var(--surface);border:2px solid var(--line);font-size:16px;font-weight:700}
+.friend .ch{width:78px;height:78px;margin:0 auto 6px}
+.friend.locked .ch{filter:grayscale(1) brightness(.4);opacity:.55}
+.friend.locked{color:var(--muted);font-weight:500}
+@media (prefers-reduced-motion:no-preference){
+  .bounce{animation:bounce .9s cubic-bezier(.3,1.8,.5,1) 1;transform-origin:50% 100%}
+  @keyframes bounce{0%{transform:none}30%{transform:translateY(-14px) scale(1.06,.94)}60%{transform:scale(.96,1.04)}100%{transform:none}}
+}
+/* step-by-step */
+.steps{margin-top:24px}
+.steplist{list-style:none;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:10px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;border-radius:18px;border:2px solid var(--line);background:var(--surface)}
+.step .num{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--surface2);color:var(--muted)}
+.step.now{border-color:var(--orange);padding:16px}
+.step.now .num{background:var(--orange);color:var(--on-accent)}
+.step.done .num{background:var(--teal);color:var(--on-accent)}
+.step.later{opacity:.5}
+.stt{font-weight:700;font-size:20px;line-height:1.3;padding-top:5px}
+.sum{color:var(--muted);font-size:17px}
+.sbody{flex:1;min-width:0}
+.sp{margin:6px 0 12px}
+.schoices{display:flex;flex-wrap:wrap;gap:10px}
+.schoice{min-height:56px;padding:8px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface2);font-weight:700;font-size:18px;text-align:left}
+.schoice.wrong{border-color:var(--red);color:var(--red)}
+.schoice[aria-pressed="true"]{border-color:var(--orange);color:var(--orange)}
+.schoice.none{min-height:44px;font-size:16px;margin-left:6px}
+.snote:not(:empty){margin:12px 0 0;color:var(--purple);font-weight:700}
+.srow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0;font-size:24px}
+.srow .nm{font-size:17px;font-weight:700;min-width:4.5em}
+.srow .op{font-size:24px}
+.sgo{margin-top:6px}
+.waiting .cards,.waiting .choices{opacity:.55;pointer-events:none}
+/* scene cards + models */
+.story{font-size:22px;line-height:1.55;margin:4px 0 10px}
+.story .frac{font-size:21px}
+.cards{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;margin:10px 0 18px}
+.card{min-width:148px;padding:12px 14px 14px;border-radius:22px;border:2px solid var(--line);background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink)}
+.card .ch{width:84px;height:84px}
+.card .nm{font-size:19px;font-weight:700}
+.card .mid{font-size:32px}
+.card[aria-pressed="true"]{border-color:var(--orange);background:var(--surface2)}
+.card.hero{border-color:var(--teal)}
+.chslot{display:block}
+.eqrow>.op{font-size:44px;color:var(--muted)}
+.axis{stroke:var(--muted);stroke-width:2}
+.trk{stroke-width:9;stroke-linecap:round}
+.trk.c0{stroke:var(--orange)}.trk.c1{stroke:var(--teal)}.trk.c2{stroke:var(--purple)}
+.tick{stroke:var(--muted);stroke-width:1.5}.tick.big{stroke:var(--ink);stroke-width:2.5}
+.tl{fill:var(--muted);font:500 15px "DM Sans",system-ui,sans-serif}
+.dot{stroke:var(--bg);stroke-width:3}.dot.c0{fill:var(--orange)}.dot.c1{fill:var(--teal)}.dot.c2{fill:var(--purple)}
+.cupsvg{margin-left:auto;margin-right:auto}
+/* compact one-screen home */
+main.home{max-width:1040px;padding-top:14px;padding-bottom:20px}
+.home .homehero{gap:14px;margin-bottom:14px}
+.home .homehero .ch{width:92px;height:92px}
+.home .homehero .title{font-size:clamp(36px,5.5vw,54px);margin:0}
+.home .homehero .sub{font-size:18px;margin:4px 0 0}
+.homegrid{display:grid;gap:14px}
+@media (min-width:700px){.homegrid{grid-template-columns:1.05fr 1fr;align-items:stretch}}
+.home .mission{padding:14px 18px;display:flex;flex-direction:column}
+.home .mission h2{font-size:22px;margin:0 0 2px}
+.home .mission .checklist{margin:0 0 10px}
+.home .trail li{padding:4px 0;font-size:18px;gap:14px}
+.home .trail .mm{height:38px}
+.home .trail .mm .plate{height:28px;font-size:15px}
+.home .trail .mm::after{top:28px;height:10px}
+.home .trail li:not(:last-child)::before{top:40px;bottom:-6px}
+.home .mission .btn.wide{min-height:54px;margin-top:auto}
+.home .record{font-size:16px;margin:8px 0 0}
+.homeside{display:flex;flex-direction:column;gap:14px}
+.panel{padding:14px 16px;border-radius:22px;background:var(--surface);border:2px solid var(--line)}
+.h3{font-size:20px;font-weight:700;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.stct{color:var(--orange);font-size:18px}
+.fhint{font-size:15px;margin:-4px 0 10px}
+.homeside .pgrid{grid-template-columns:1fr 1fr;gap:8px}
+.homeside .pgrid .btn{min-height:50px;padding:8px 12px;font-size:16px;border-radius:12px;line-height:1.25}
+.homeside .friends{grid-template-columns:repeat(3,1fr);gap:8px}
+.homeside .friend{padding:6px 4px;font-size:14px;border-radius:14px}
+.homeside .friend .ch{width:50px;height:50px;margin:0 auto 2px}
+.home .homefoot{margin-top:14px}
+.home .hold,.home .toggle{min-height:44px}
+.bk{width:100%;min-height:120px;font:14px ui-monospace,Menlo,monospace;background:var(--surface2);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:10px;word-break:break-all}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+(function(){
+"use strict";
+const KEY='fractionlab.v1';
+const SKILLS={
+  compare:{name:'Compare two fractions'},
+  benchmark:{name:'Compare to ½ or 1'},
+  missing:{name:'Fill in the missing number'},
+  equiv:{name:'Same size or not?'},
+  findtwo:{name:'Make equivalent fractions'},
+  story:{name:'Story problem'}
+};
+const MISSION=['compare','benchmark','missing','equiv','findtwo','story'];
+const STRAT_NAMES={samebottom:'Same bottom number',sametop:'Same top number',common:'Made the bottoms match',half:'Compared to ½',whole:'Compared to 1 whole',draw:'Drew it',halfof:'Found half of the bottom',wholeis:'What makes 1 whole',times:'Multiplied top and bottom',divide:'Divided top and bottom',bars:'Pictured the bars'};
+
+/* ---------- kawaii cast (original characters) ---------- */
+const INK='#3b2b2b',BLUSH='#ff9fb4';
+function face(cx,cy,mood,s){s=s||1;const ex=14*s;let eyes,mouth;
+  if(mood==='happy'||mood==='cheer'){
+    eyes=[-ex,ex].map(o=>`<path d="M${cx+o-5*s} ${cy+2*s} q${5*s} ${-8*s} ${10*s} 0" fill="none" stroke="${INK}" stroke-width="${3.2*s}" stroke-linecap="round"/>`).join('');
+    mouth=`<path d="M${cx-6*s} ${cy+9*s} q${6*s} ${9*s} ${12*s} 0 z" fill="#ff6f8f" stroke="${INK}" stroke-width="${2.4*s}" stroke-linejoin="round"/>`;
+  }else{
+    const up=mood==='think'?-2*s:0;
+    eyes=[-ex,ex].map(o=>`<ellipse cx="${cx+o}" cy="${cy+up}" rx="${4.6*s}" ry="${5.6*s}" fill="${INK}"/><circle cx="${cx+o+1.6*s}" cy="${cy+up-2*s}" r="${1.7*s}" fill="#fff"/>`).join('');
+    mouth=mood==='think'?`<ellipse cx="${cx}" cy="${cy+11*s}" rx="${3*s}" ry="${3.4*s}" fill="none" stroke="${INK}" stroke-width="${2.4*s}"/>`:`<path d="M${cx-7*s} ${cy+8*s} q${3.5*s} ${4*s} ${7*s} 0 q${3.5*s} ${4*s} ${7*s} 0" fill="none" stroke="${INK}" stroke-width="${2.6*s}" stroke-linecap="round"/>`;
+  }
+  const blush=[-ex-6*s,ex+6*s].map(o=>`<ellipse cx="${cx+o}" cy="${cy+7*s}" rx="${5.5*s}" ry="${3.3*s}" fill="${BLUSH}" opacity=".85"/>`).join('');
+  return blush+eyes+mouth;}
+function extras(mood){
+  if(mood==='cheer')return `<g fill="#ffd36e" stroke="${INK}" stroke-width="1.5">${[[13,22,1],[105,16,.8],[109,76,.7]].map(([x,y,k])=>`<path transform="translate(${x} ${y}) scale(${k})" d="M0 -9 L2.6 -2.6 L9 0 L2.6 2.6 L0 9 L-2.6 2.6 L-9 0 L-2.6 -2.6Z"/>`).join('')}</g>`;
+  if(mood==='think')return `<path d="M102 24 q8 12 0 16 q-8 -4 0 -16z" fill="#9fd3ff" stroke="${INK}" stroke-width="2"/>`;
+  return '';}
+const O=`stroke="${INK}" stroke-width="3" stroke-linejoin="round"`;
+const CAST={
+  mochi:{name:'Mochi',at:0,line:'I am a mochi, and I love halves!',draw:m=>`
+    <path d="M60 22 q-6 -12 -16 -9 q4 9 16 9z M60 22 q6 -12 16 -9 q-4 9 -16 9z" fill="#ffb7c9" ${O}/>
+    <path d="M16 78 C16 44 36 24 60 24 C84 24 104 44 104 78 C104 96 86 104 60 104 C34 104 16 96 16 78Z" fill="#fff6f1" ${O}/>
+    <path d="M60 25.5 C83 26 102.5 45 102.5 78 C102.5 95 85 102.5 60 102.5Z" fill="#ffd9e2"/>
+    <path d="M60 26 L60 102" stroke="${INK}" stroke-width="2" stroke-dasharray="4 5" opacity=".3"/>
+    ${face(60,70,m)}`},
+  kelp:{name:'Kelp the otter',at:0,line:'I swim in the kelp forest!',draw:m=>`
+    <circle cx="22" cy="50" r="8" fill="#a9774f" ${O}/><circle cx="98" cy="50" r="8" fill="#a9774f" ${O}/>
+    <ellipse cx="60" cy="66" rx="44" ry="40" fill="#b98a63" ${O}/>
+    <ellipse cx="60" cy="76" rx="29" ry="23" fill="#f3e2cc"/>
+    ${face(60,58,m)}
+    <ellipse cx="60" cy="63" rx="4.5" ry="3.2" fill="${INK}"/>
+    <path d="M27 78 h-12 M27 85 h-11 M93 78 h12 M93 85 h11" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`},
+  bolt:{name:'Bolt the robot',at:10,line:'Beep boop! Let us test it.',draw:m=>`
+    <line x1="60" y1="22" x2="60" y2="10" stroke="${INK}" stroke-width="3"/><circle cx="60" cy="9" r="6" fill="#f0a457" ${O}/>
+    <rect x="8" y="52" width="12" height="22" rx="5" fill="#7cc4c4" ${O}/><rect x="100" y="52" width="12" height="22" rx="5" fill="#7cc4c4" ${O}/>
+    <rect x="18" y="22" width="84" height="80" rx="26" fill="#a8e0de" ${O}/>
+    <rect x="28" y="36" width="64" height="52" rx="18" fill="#eafaf8" ${O}/>
+    ${face(60,58,m,.95)}`},
+  hazel:{name:'Hazel the squirrel',at:25,line:'I save my acorns in fractions!',draw:m=>`
+    <path d="M84 104 C120 98 122 50 100 38 C88 32 78 46 90 56 C100 66 96 84 78 92Z" fill="#e3a06a" ${O}/>
+    <path d="M28 36 L24 12 L44 28Z M88 36 L92 12 L72 28Z" fill="#d98f5c" ${O}/>
+    <ellipse cx="58" cy="66" rx="40" ry="38" fill="#d98f5c" ${O}/>
+    <ellipse cx="58" cy="76" rx="25" ry="21" fill="#fbe5cf"/>
+    ${face(58,58,m,.95)}
+    <ellipse cx="58" cy="63" rx="3.6" ry="2.7" fill="${INK}"/>`},
+  rio:{name:'Rio the hawk',at:45,line:'I can spot fractions from the sky!',draw:m=>`
+    <path d="M54 26 q2 -16 12 -14 q-2 7 -5 14z" fill="#a8613a" ${O}/>
+    <path d="M20 68 q-12 10 -6 26 q13 -2 17 -15z M100 68 q12 10 6 26 q-13 -2 -17 -15z" fill="#a8613a" ${O}/>
+    <ellipse cx="60" cy="66" rx="42" ry="42" fill="#c97b4a" ${O}/>
+    <ellipse cx="60" cy="84" rx="26" ry="20" fill="#fbead6"/>
+    ${face(60,56,m,.95)}
+    <path d="M55 60 L65 60 L60 67Z" fill="#ffc24a" ${O}/>`},
+  dart:{name:'Dart the paper plane',at:70,line:'Whoosh! I fly the farthest.',draw:m=>`
+    <path d="M6 66 L114 26 L60 108 L52 80Z" fill="#ffffff" ${O}/>
+    <path d="M52 80 L114 26 L42 70Z" fill="#dcd6ff" ${O}/>
+    ${face(74,78,m,.62)}`}
+};
+function ch(id,mood,cls){const c=CAST[id];return `<svg class="ch ${cls||''}" viewBox="0 0 120 120" role="img" aria-label="${c.name}">${c.draw(mood||'normal')}${extras(mood)}</svg>`}
+const totalStars=()=>S.totalStars||0;
+const unlocked=()=>Object.keys(CAST).filter(k=>CAST[k].at<=totalStars());
+const ARROW='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v13M4.5 10l5.5 5.5 5.5-5.5" fill="none" stroke="#5fbf8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHECKI='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHEERS=['Yay! You got it!','Sugoi! That’s right!','Fraction power!','You’re on fire!','Nailed it!'];
+
+/* ---------- state ---------- */
+function freshState(){return{levels:{compare:1,benchmark:1,missing:1,equiv:1,findtwo:1,story:1},runs:{},history:[],steps:true,best:0,missions:0,streak:0,totalStars:0,lastDay:null,autoRead:true}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);const s=freshState();Object.assign(s,o);s.levels=Object.assign(freshState().levels,o.levels||{});if(o.totalStars==null)s.totalStars=(s.history||[]).reduce((t,h)=>t+(h.correct?1:0)+(h.expl?1:0),0);return s}}catch(e){}return freshState()}
+let S=load();
+function save(){
+  if(S.history.length>60)S.history=S.history.slice(-60);
+  try{localStorage.setItem(KEY,JSON.stringify(S))}
+  catch(e){try{S.history.forEach((h,i)=>{if(i<S.history.length-10)h.drawing=null});localStorage.setItem(KEY,JSON.stringify(S))}catch(e2){}}
+}
+
+/* ---------- math helpers ---------- */
+const $=s=>document.querySelector(s);
+const app=$('#app');
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a}
+const lcm=(a,b)=>a/gcd(a,b)*b;
+const F=(n,d)=>({n,d});
+const txt=f=>f.n+'/'+f.d;
+const eq=(a,b)=>a.n*b.d===b.n*a.d;
+function cmpSym(a,b){const x=a.n*b.d,y=b.n*a.d;return x>y?'>':x<y?'<':'='}
+const symWord=s=>({'>':'greater than','<':'less than','=':'equal to'})[s];
+const DENS=[2,3,4,5,6,8,10,12];
+const NAMES={2:['half','halves'],3:['third','thirds'],4:['fourth','fourths'],5:['fifth','fifths'],6:['sixth','sixths'],7:['seventh','sevenths'],8:['eighth','eighths'],9:['ninth','ninths'],10:['tenth','tenths'],12:['twelfth','twelfths'],16:['sixteenth','sixteenths'],20:['twentieth','twentieths'],24:['twenty-fourth','twenty-fourths'],25:['twenty-fifth','twenty-fifths'],100:['hundredth','hundredths']};
+function spoken(f){if(f.d===1)return f.n===1?'one whole':f.n+' wholes';const nm=NAMES[f.d];return nm?`${f.n===1?'one':f.n} ${f.n===1?nm[0]:nm[1]}`:`${f.n} over ${f.d}`}
+function fr(f,cls){return `<span class="frac ${cls||''}" aria-label="${spoken(f)}"><span class="n">${f.n}</span><span class="d">${f.d}</span></span>`}
+function parseNum(s){s=String(s||'').trim();if(!s)return null;let m=s.match(/^(\d+)\s+(\d+)\/(\d+)$/);if(m)return +m[1]+ +m[2]/ +m[3];m=s.match(/^(\d+)\/(\d+)$/);if(m)return +m[1]/ +m[2];const v=parseFloat(s);return isNaN(v)?null:v}
+const valN=id=>{const el=document.getElementById(id);return el?parseNum(el.value):null};
+const intIn=(id,cls)=>`<input class="numin ${cls||''}" id="${id}" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="number">`;
+const decIn=(id)=>`<input class="numin wide" id="${id}" inputmode="decimal" autocomplete="off" aria-label="number">`;
+
+/* ---------- speech ---------- */
+/* Read-aloud. iPad Safari drops an utterance queued right after cancel(), and
+   long utterances can stall, so speech is split into sentences, kept referenced,
+   and restarted after a short pause when something is already playing. */
+const canSpeak=()=>typeof window.speechSynthesis!=='undefined'&&typeof window.SpeechSynthesisUtterance!=='undefined';
+let sayVoice=null,sayTok=0,sayLive=[];
+const NOVELTY=/Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Good News|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Junior|Ralph|Fred|Kathy|Deranged|Hysterical|Pipe|Princess/i;
+const ROBOTY=/Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley/i;
+function voiceScore(v){let s=0;if(/premium/i.test(v.name))s+=100;if(/enhanced/i.test(v.name))s+=60;if(/^en[-_]US/i.test(v.lang))s+=20;else if(/^en/i.test(v.lang))s+=10;else s-=200;if(/Ava|Zoe|Samantha|Allison|Evan|Nathan|Joelle|Noelle|Susan|Tom|Google US/i.test(v.name))s+=15;if(NOVELTY.test(v.name))s-=150;if(ROBOTY.test(v.name))s-=40;return s}
+function englishVoices(){try{return speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&!NOVELTY.test(v.name)).sort((a,b)=>voiceScore(b)-voiceScore(a))}catch(e){return[]}}
+function pickVoice(){const vs=englishVoices();sayVoice=(S.voiceName&&vs.find(v=>v.name===S.voiceName))||vs[0]||null}
+if(canSpeak()){pickVoice();try{speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(e){}}
+function setSpeaking(on){const b=document.getElementById('readbtn');if(!b)return;b.textContent=on?'⏹':'🔊';b.setAttribute('aria-label',on?'Stop reading':'Read it to me')}
+function stopSpeaking(){sayTok++;try{speechSynthesis.cancel()}catch(e){}sayLive=[];setSpeaking(false)}
+function speak(t,force){
+  if(!force&&!S.autoRead)return;
+  if(!canSpeak())return;
+  const text=String(t).replace(/½/g,'one half').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/(\d+)¢/g,'$1 cents').replace(/[“”⬆]/g,'').replace(/\s+/g,' ').trim();
+  if(!text)return;
+  const parts=(text.match(/[^.!?]+[.!?]*/g)||[text]).map(x=>x.trim()).filter(Boolean);
+  const tok=++sayTok;
+  const go=()=>{
+    if(tok!==sayTok)return;
+    sayLive=[];
+    parts.forEach((p,i)=>{
+      const u=new SpeechSynthesisUtterance(p);u.rate=S.rate||.92;u.pitch=1;u.lang=sayVoice?sayVoice.lang:'en-US';if(sayVoice)u.voice=sayVoice;
+      if(i===0)u.onstart=()=>{if(tok===sayTok)setSpeaking(true)};
+      u.onend=u.onerror=()=>{sayLive=sayLive.filter(x=>x!==u);if(i===parts.length-1&&tok===sayTok)setSpeaking(false)};
+      sayLive.push(u);speechSynthesis.speak(u);
+    });
+    try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}
+  };
+  try{
+    if(speechSynthesis.speaking||speechSynthesis.pending){speechSynthesis.cancel();setTimeout(go,150)}
+    else go();
+  }catch(e){}
+}
+
+/* ---------- generators ---------- */
+function genCompare(L){
+  let a,b;
+  if(L===1){
+    if(Math.random()<.5){const d=pick([3,4,5,6,8,10,12]);const n1=ri(1,d-1);let n2;do{n2=ri(1,d-1)}while(n2===n1);a=F(n1,d);b=F(n2,d)}
+    else{const n=ri(1,3);const ds=DENS.filter(d=>d>n);const d1=pick(ds);let d2;do{d2=pick(ds)}while(d2===d1);a=F(n,d1);b=F(n,d2)}
+  }else if(L===2){
+    const [p,q]=pick([[2,4],[2,8],[4,8],[3,6],[3,12],[4,12],[6,12],[5,10],[2,10],[10,100],[2,6],[4,100]]);
+    const k=q/p,n1=ri(1,p-1);let n2;
+    if(Math.random()<.2)n2=n1*k;
+    else if(q===100)n2=Math.max(1,Math.min(99,n1*k+pick([-9,-5,-1,1,4,9])));
+    else{do{n2=ri(1,q-1)}while(n2===n1*k)}
+    a=F(n1,p);b=F(n2,q);
+  }else{
+    const r=Math.random();
+    if(r<.6){const [p,q]=pick([[3,4],[4,6],[6,8],[3,8],[5,6],[4,10],[8,12],[3,10],[6,10],[10,12],[4,5],[2,5]]);do{a=F(ri(1,p-1),p);b=F(ri(1,q-1),q)}while(eq(a,b))}
+    else if(r<.8){const p=pick([2,3,4]);const q=p*2;a=F(ri(p+1,2*p),p);do{b=F(ri(q+1,2*q),q)}while(eq(a,b))}
+    else{a=F(ri(11,19),10);b=F(ri(5,95),100)}
+  }
+  if(Math.random()<.5)[a,b]=[b,a];
+  return{type:'compare',skill:'compare',a,b,answer:cmpSym(a,b)};
+}
+function genBenchmark(L){
+  const half=F(1,2),one=F(1,1);let t,a;
+  if(L===1){t=one;const d=pick([3,4,5,6,8,10,12]);a=F(pick([d-1,d+1,d+ri(1,d-1),Math.max(1,ri(1,d-2))]),d)}
+  else if(L===2){t=half;const d=pick([4,6,8,10,12,100]);const h=d/2;let n;
+    if(Math.random()<.15)n=h;else if(d===100)n=h+pick([-30,-12,-3,2,8,25]);else n=pick([h-1,h+1,ri(1,d-1)]);
+    a=F(Math.max(1,n),d)}
+  else{if(Math.random()<.5){t=half;const d=pick([3,5]);a=F(ri(1,d-1),d)}else{t=one;const d=pick([12,100,10]);a=F(d+pick([-1,1,-3,3]),d)}}
+  const s=cmpSym(a,t);
+  return{type:'benchmark',skill:'benchmark',a,t,answer:s==='>'?'greater':s==='<'?'less':'equal'};
+}
+function genMissing(L){
+  const d=pick([2,3,4,5,6]);let n=ri(1,d-1);
+  if(L===3&&Math.random()<.4)n=ri(d+1,2*d);
+  const k=L===1?2:ri(2,L===2?5:6);
+  const small=F(n,d),big=F(n*k,d*k);
+  let left,right,missing;
+  if(L===3&&Math.random()<.35){left=big;right=F(small.n,small.d);missing='n'}
+  else{left=small;right=F(big.n,big.d);missing=(L>=2&&Math.random()<.3)?'d':'n'}
+  return{type:'missing',skill:'missing',left,right,missing,answer:right[missing]};
+}
+function genEquiv(L){
+  const base=L===1?pick([F(1,2),F(1,3),F(2,3),F(1,4),F(3,4),F(2,5)]):L===2?pick([F(3,8),F(5,6),F(3,4),F(2,5),F(4,5),F(3,10)]):pick([F(9,4),F(5,3),F(7,4),F(5,2),F(11,5),F(7,6)]);
+  const opts=[],used=new Set([txt(base)]);
+  const add=(f,tag)=>{const k=txt(f);if(used.has(k)||f.n<=0||f.d<=0)return;used.add(k);opts.push({f,ok:eq(f,base),tag})};
+  const ks=shuffle([2,3,4,5]);
+  add(F(base.n*ks[0],base.d*ks[0]),'times');
+  if(Math.random()<.5)add(F(base.n*ks[1],base.d*ks[1]),'times');
+  let guard=0;
+  while(opts.length<4&&guard++<80){
+    const r=Math.random(),j=ri(1,4);let f,tag='other';
+    if(r<.4){f=F(base.n+j,base.d+j);tag='additive'}
+    else if(r<.7){const k=ri(2,4);f=F(base.n*k,base.d*k+pick([-2,-1,1,2]))}
+    else{const k=ri(2,4);f=F(base.n*k+pick([-1,1]),base.d*k)}
+    if(eq(f,base))continue;
+    add(f,tag);
+  }
+  return{type:'equiv',skill:'equiv',base,opts:shuffle(opts)};
+}
+function genFindTwo(L){
+  const base=L===1?pick([F(1,2),F(1,3),F(1,4),F(2,3),F(3,4),F(2,5)]):L===2?pick([F(3,8),F(2,5),F(5,6),F(3,10),F(4,5),F(20,100),F(6,8)]):pick([F(5,3),F(9,4),F(7,4),F(5,2),F(5,4),F(11,10)]);
+  return{type:'findtwo',skill:'findtwo',base};
+}
+function genStory(L){
+  const D=pick(L===1?[8,12]:[12,8,10]);
+  const divs={8:[2,4,8],12:[2,3,4,6,12],10:[2,5,10]}[D];
+  let fs,guard=0;
+  do{fs=[0,1,2].map(()=>{const d=pick(divs);return F(ri(1,d-1),d)})}
+  while(guard++<200&&(new Set(fs.map(f=>f.n*D/f.d)).size<3||new Set(fs.map(f=>f.d)).size<2));
+  const ask=(L===3&&Math.random()<.5)?'least':'most';
+  const vals=fs.map(f=>f.n/f.d);
+  const answer=ask==='most'?vals.indexOf(Math.max(...vals)):vals.indexOf(Math.min(...vals));
+  return{type:'story',skill:'story',fs,ask,answer:String(answer)};
+}
+const GEN={compare:genCompare,benchmark:genBenchmark,missing:genMissing,equiv:genEquiv,findtwo:genFindTwo,story:genStory};
+
+/* ---------- real-world scenes ---------- */
+const CTX={
+  pizza:{emoji:'🍕',model:'pie',dens:[2,3,4,6,8,12],cut:true,verb:'ate',base:'eat',of:'of a pizza',obj:'pizza',pieces:'slices',more:'Who ate more pizza?',most:'Who ate the most pizza?',least:'Who ate the least pizza?',half:'half a pizza',whole:'1 whole pizza',set:'It’s pizza party night!'},
+  chocolate:{emoji:'🍫',model:'bar',dens:[2,3,4,5,6,8,10,12],cut:true,verb:'ate',base:'eat',of:'of a chocolate bar',obj:'chocolate bar',pieces:'pieces',more:'Who ate more chocolate?',most:'Who ate the most chocolate?',least:'Who ate the least chocolate?',half:'half a chocolate bar',whole:'1 whole chocolate bar',set:'Snack time after the hike!'},
+  trail:{emoji:'🥾',model:'line',dens:[2,3,4,5,6,8,10,12],verb:'hiked',base:'hike',of:'of a mile',obj:'trail',more:'Who hiked farther?',most:'Who hiked the farthest?',least:'Who hiked the shortest distance?',half:'half a mile',whole:'1 mile',set:'The friends went hiking at the park.'},
+  bottle:{emoji:'💧',model:'cup',dens:[2,3,4,5,6,8,10],verb:'drank',base:'drink',of:'of a water bottle',obj:'water bottle',more:'Who drank more water?',most:'Who drank the most water?',least:'Who drank the least water?',half:'half a bottle',whole:'1 whole bottle',set:'It was a hot day at soccer practice.'},
+  ribbon:{emoji:'🎀',model:'bar',dens:[2,3,4,6,8,12],verb:'used',base:'use',of:'of a yard of ribbon',obj:'ribbon',more:'Who used more ribbon?',most:'Who used the most ribbon?',least:'Who used the least ribbon?',half:'half a yard',whole:'1 yard',set:'The friends are sewing plushies.'},
+  dollar:{emoji:'🪙',model:'grid',dens:[2,4,10,100],verb:'spent',base:'spend',of:'of a dollar',obj:'dollar',more:'Who spent more money?',most:'Who spent the most money?',least:'Who spent the least money?',half:'half a dollar',whole:'1 dollar',set:'The friends went to the farmers market.'}
+};
+function pickCtx(fs,needCut){
+  let c=Object.keys(CTX).filter(k=>(!needCut||CTX[k].cut)&&fs.every(f=>CTX[k].dens.includes(f.d)));
+  if(!c.length)c=needCut?['pizza','chocolate']:['chocolate','ribbon','trail'];
+  return pick(c);
+}
+function pickActors(k){const u=unlocked(),rest=Object.keys(CAST).filter(x=>!u.includes(x));return shuffle(u).concat(shuffle(rest)).slice(0,k)}
+function dress(P){
+  const need={compare:[[P.a,P.b],2],benchmark:[[P.a],1],missing:[[],2],equiv:[[P.base],1+(P.opts?P.opts.length:0)],findtwo:[[P.base],3],story:[P.fs,3]}[P.type];
+  P.ctxKey=pickCtx(need[0],P.type==='missing');P.ctx=CTX[P.ctxKey];
+  P.who=pickActors(need[1]);P.names=P.who.map(k=>CAST[k].name.split(' ')[0]);
+  return P;
+}
+const N=i=>P.names[i];
+const cents=f=>(P.ctxKey==='dollar'&&100%f.d===0)?` (${f.n*100/f.d}¢)`:'';
+function scene(F2){
+  const c=P.ctx,s=(i,f)=>`${N(i)} ${c.verb} ${F2(f)} ${c.of}${cents(f)}.`;
+  const one=(n,w)=>n===1?w.replace(/s$/,''):w;
+  switch(P.type){
+    case 'compare':return{story:`${c.set} ${s(0,P.a)} ${s(1,P.b)}`,q:c.more};
+    case 'benchmark':return{story:`${c.set} ${s(0,P.a)}`,q:`Did ${N(0)} ${c.base} more or less than ${P.t.d===2?c.half:c.whole}?`};
+    case 'missing':{const L=P.left,R=P.right;
+      if(P.missing==='d')return{story:`${c.set} ${s(0,L)} ${N(1)} ${c.verb} ${R.n} ${one(R.n,c.pieces)} and got the exact same amount.`,q:`How many ${c.pieces} was ${N(1)}’s ${c.obj} cut into?`};
+      return{story:`${c.set} ${N(0)} cut ${L.n>L.d?'each':'a'} ${c.obj} into ${L.d} equal ${c.pieces} and ${c.verb} ${L.n} ${one(L.n,c.pieces)}. ${N(1)} cut the same size ${c.obj} into ${R.d} ${c.pieces}.`,q:`How many ${c.pieces} should ${N(1)} ${c.base} to get the same amount as ${N(0)}?`}}
+    case 'equiv':return{story:`${c.set} ${s(0,P.base)}`,q:`Who ${c.verb} the same amount as ${N(0)}? Tap everyone who did.`};
+    case 'findtwo':return{story:`${c.set} ${s(0,P.base)}`,q:`${N(1)} and ${N(2)} ${c.verb} the same amount as ${N(0)}, but each wrote it as a different fraction. What could they have written?`};
+    case 'story':return{story:`${c.set} ${P.fs.map((f,i)=>s(i,f)).join(' ')}`,q:P.ask==='most'?c.most:c.least};
+  }
+}
+function card(i,inner,o){
+  o=o||{};const k=P.who[i];
+  const attrs=o.pick?`class="card pick" data-v="${o.v}" data-ch="${k}" data-say="${N(i)}" aria-pressed="false"`:o.multi?`class="card multi" data-i="${o.v}" data-ch="${k}" data-say="${N(i)}" aria-pressed="false"`:`class="card${o.hero?' hero':''}"`;
+  const tag=(o.pick||o.multi)?'button':'div';
+  return `<${tag} ${attrs}><span class="chslot">${ch(k,'normal')}</span><span class="nm">${N(i)}</span>${inner}</${tag}>`;
+}
+function rowsFor(){
+  switch(P.type){
+    case 'compare':return[{f:P.a,label:N(0)},{f:P.b,label:N(1)}];
+    case 'benchmark':return[{f:P.a,label:N(0)}];
+    case 'missing':return[{f:P.left,label:N(0)}];
+    case 'equiv':case 'findtwo':return[{f:P.base,label:N(0)}];
+    case 'story':return P.fs.map((f,i)=>({f,label:N(i)}));
+  }
+}
+
+/* ---------- visuals ---------- *//* ---------- visuals ---------- */
+function bars(rows,marks){
+  marks=marks||[];
+  const maxV=Math.max(1,...rows.map(r=>r.f.n/r.f.d));const wholes=Math.ceil(maxV-1e-9);
+  const W=600,left=100,right=12,rowH=34,gap=14,top=marks.length?26:4;const unit=(W-left-right)/wholes;
+  const H=top+rows.length*(rowH+gap);
+  let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" role="img" aria-label="Fraction bars">`;
+  rows.forEach((r,i)=>{
+    const y=top+i*(rowH+gap),n=r.f.n,d=r.f.d,c='c'+(r.c!=null?r.c:i%3);
+    s+=`<text x="0" y="${y+rowH/2+6}" class="bl">${r.label||txt(r.f)}</text>`;
+    for(let w=0;w<wholes;w++){
+      for(let k=0;k<d;k++){const x=left+w*unit+k*unit/d;const on=(w*d+k)<n;
+        s+=`<rect x="${x.toFixed(2)}" y="${y}" width="${(unit/d).toFixed(2)}" height="${rowH}" class="seg${on?' on '+c:''}${d>24?' thin':''}"/>`}
+      s+=`<rect x="${(left+w*unit).toFixed(2)}" y="${y}" width="${unit.toFixed(2)}" height="${rowH}" class="wholebox"/>`;
+    }
+  });
+  marks.forEach(m=>{const x=(left+m.v*unit).toFixed(2);s+=`<line x1="${x}" x2="${x}" y1="${top-6}" y2="${H-gap+4}" class="mk"/><text x="${x}" y="${top-10}" class="mkl" text-anchor="middle">${m.label}</text>`});
+  return s+'</svg>';
+}
+let clipN=0;
+function model(rows,marks){
+  const m=P&&P.ctx?P.ctx.model:'bar';
+  if(m==='pie')return pies(rows);
+  if(m==='line')return lines(rows,marks);
+  if(m==='cup'&&rows.every(r=>r.f.d<=24))return cups(rows,marks);
+  if(m==='grid'&&rows.every(r=>100%r.f.d===0))return grids(rows);
+  return bars(rows,marks);
+}
+const colorOf=(r,i)=>'c'+(r.c!=null?r.c:i%3);
+function pies(rows){
+  const R=40,step=96,rowH=96,left=100;
+  const maxW=Math.max(1,...rows.map(r=>Math.ceil(r.f.n/r.f.d-1e-9)));
+  const W=Math.max(600,left+maxW*step),H=rows.length*rowH+8;
+  let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" role="img" aria-label="Pizza picture">`;
+  rows.forEach((r,i)=>{
+    const cy=i*rowH+R+8,c=colorOf(r,i),n=r.f.n,d=r.f.d,nb=Math.max(1,Math.ceil(n/d-1e-9));
+    s+=`<text x="0" y="${cy+6}" class="bl">${r.label||txt(r.f)}</text>`;
+    for(let w=0;w<nb;w++){const cx=left+R+w*step;
+      for(let k=0;k<d;k++){const on=w*d+k<n;
+        if(d===1){s+=`<circle cx="${cx}" cy="${cy}" r="${R}" class="seg${on?' on '+c:''}"/>`;continue}
+        const a0=k/d*2*Math.PI-Math.PI/2,a1=(k+1)/d*2*Math.PI-Math.PI/2;
+        s+=`<path d="M${cx} ${cy} L${(cx+R*Math.cos(a0)).toFixed(2)} ${(cy+R*Math.sin(a0)).toFixed(2)} A${R} ${R} 0 0 1 ${(cx+R*Math.cos(a1)).toFixed(2)} ${(cy+R*Math.sin(a1)).toFixed(2)}Z" class="seg${on?' on '+c:''}${d>24?' thin':''}"/>`}
+      s+=`<circle cx="${cx}" cy="${cy}" r="${R}" class="wholebox"/>`}
+  });
+  return s+'</svg>';
+}
+function lines(rows,marks){
+  marks=marks||[];
+  const maxV=Math.max(1,...rows.map(r=>r.f.n/r.f.d)),wholes=Math.ceil(maxV-1e-9);
+  const W=600,left=100,right=24,rowH=70,top=marks.length?28:10,unit=(W-left-right)/wholes,H=top+rows.length*rowH;
+  let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" role="img" aria-label="Trail picture">`;
+  rows.forEach((r,i)=>{
+    const y=top+i*rowH+22,c=colorOf(r,i),n=r.f.n,d=r.f.d,xe=(left+unit*n/d).toFixed(2);
+    s+=`<text x="0" y="${y+6}" class="bl">${r.label||txt(r.f)}</text>`;
+    s+=`<line x1="${left}" x2="${left+wholes*unit}" y1="${y}" y2="${y}" class="axis"/>`;
+    s+=`<line x1="${left}" x2="${xe}" y1="${y}" y2="${y}" class="trk ${c}"/>`;
+    for(let k=0;k<=wholes*d;k++){const x=(left+k*unit/d).toFixed(2),big=k%d===0;
+      s+=`<line x1="${x}" x2="${x}" y1="${y-(big?12:7)}" y2="${y+(big?12:7)}" class="tick${big?' big':''}"/>`;
+      if(big)s+=`<text x="${x}" y="${y+32}" class="tl" text-anchor="middle">${k/d} mi</text>`}
+    s+=`<circle cx="${xe}" cy="${y}" r="10" class="dot ${c}"/>`;
+  });
+  marks.forEach(m=>{const x=(left+m.v*unit).toFixed(2);s+=`<line x1="${x}" x2="${x}" y1="${top-6}" y2="${H-8}" class="mk"/><text x="${x}" y="${top-10}" class="mkl" text-anchor="middle">${m.label}</text>`});
+  return s+'</svg>';
+}
+function cups(rows,marks){
+  marks=marks||[];
+  const bw=64,bh=150,gap=14,group=44,top=30,H=top+bh+52;let x=10,s='';
+  rows.forEach((r,i)=>{
+    const c=colorOf(r,i),n=r.f.n,d=r.f.d,nb=Math.max(1,Math.ceil(n/d-1e-9)),gx=x;
+    for(let b=0;b<nb;b++){
+      const id='cp'+(++clipN),filled=Math.min(1,Math.max(0,n/d-b));
+      s+=`<clipPath id="${id}"><rect x="${x}" y="${top}" width="${bw}" height="${bh}" rx="14"/></clipPath>`;
+      s+=`<rect x="${x+bw*.3}" y="${top-14}" width="${bw*.4}" height="16" rx="4" class="wholebox"/>`;
+      s+=`<rect x="${x}" y="${top}" width="${bw}" height="${bh}" rx="14" class="seg"/>`;
+      if(filled>0)s+=`<rect clip-path="url(#${id})" x="${x}" y="${(top+bh*(1-filled)).toFixed(2)}" width="${bw}" height="${(bh*filled).toFixed(2)}" class="seg on ${c}"/>`;
+      for(let k=1;k<d;k++){const y=(top+bh*(1-k/d)).toFixed(2);s+=`<line x1="${x}" x2="${x+bw*.38}" y1="${y}" y2="${y}" class="tick big"/>`}
+      s+=`<rect x="${x}" y="${top}" width="${bw}" height="${bh}" rx="14" class="wholebox"/>`;
+      x+=bw+gap;
+    }
+    s+=`<text x="${(gx+x-gap)/2}" y="${top+bh+34}" class="bl" text-anchor="middle">${r.label||txt(r.f)}</text>`;
+    x+=group;
+  });
+  const W=Math.max(x-group+10,200);
+  marks.forEach(m=>{if(m.v<=1){const y=(top+bh*(1-m.v)).toFixed(2);s+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" class="mk"/><text x="${W-4}" y="${y-6}" class="mkl" text-anchor="end">${m.label}</text>`}});
+  return `<svg class="bars cupsvg" viewBox="0 0 ${W} ${H}" style="max-width:${Math.round(W*1.3)}px" role="img" aria-label="Water bottle picture">${s}</svg>`;
+}
+function grids(rows){
+  const cell=11,gs=cell*10,left=100,step=gs+16,rowH=gs+20;
+  const counts=rows.map(r=>Math.round(r.f.n*100/r.f.d));
+  const maxW=Math.max(1,...counts.map(c=>Math.ceil(c/100-1e-9)));
+  const W=Math.max(600,left+maxW*step),H=rows.length*rowH+4;
+  let s=`<svg class="bars" viewBox="0 0 ${W} ${H}" role="img" aria-label="Money grid, 100 squares is 1 dollar">`;
+  rows.forEach((r,i)=>{
+    const y=i*rowH+4,c=colorOf(r,i),cnt=counts[i],nb=Math.max(1,Math.ceil(cnt/100-1e-9));
+    s+=`<text x="0" y="${y+gs/2+6}" class="bl">${r.label||txt(r.f)}</text>`;
+    for(let b=0;b<nb;b++){const gx=left+b*step;
+      for(let col=0;col<10;col++)for(let row=0;row<10;row++){const on=b*100+col*10+row<cnt;s+=`<rect x="${gx+col*cell}" y="${y+row*cell}" width="${cell}" height="${cell}" class="seg${on?' on '+c:''}"/>`}
+      s+=`<rect x="${gx}" y="${y}" width="${gs}" height="${gs}" class="wholebox"/>`}
+  });
+  return s+'</svg>';
+}
+function commonProof(fs,names){
+  const L=fs.reduce((a,f)=>lcm(a,f.d),1);
+  const conv=fs.map(f=>F(f.n*L/f.d,L));
+  const same=fs.every(f=>f.d===fs[0].d);
+  const lines=fs.map((f,i)=>`<div class="pline">${names?`<span class="pn">${names[i]}</span>`:''}${fr(f,'mid')}${same?'':`<span class="op">=</span>${fr(conv[i],'mid')}`}</div>`).join('');
+  const lead=same?'The bottom numbers already match, so compare the top numbers.':`Make the bottom numbers match. Use ${L} for all of them, then compare the top numbers.`;
+  return `<p>${lead}</p>${lines}`;
+}
+
+/* ---------- session ---------- */
+let ST=null,M=null,P=null,ans=null,chosen=new Set(),hintUsed=false,phase='answer',pad=null,lastResult=null,G='mochi';
+function guideLine(){const c=P.ctx;switch(P.type){
+  case 'compare':return `Did I ${c.base} more than ${N(1)}? Help me check!`;
+  case 'benchmark':return `Was it more or less than ${P.t.d===2?c.half:c.whole}? I can’t tell!`;
+  case 'missing':return `I want the same amount as ${N(0)}. Help me figure it out!`;
+  case 'equiv':return `Who ${c.verb} the same amount as me?`;
+  case 'findtwo':return `We want the same amount as ${N(0)}, written a different way!`;
+  case 'story':return `Who ${c.verb} the ${P.ask==='most'?'most':'least'}? Let’s find out!`;}}
+function setGuide(mood,text){const g=$('#guide');if(!g)return;g.innerHTML=`${ch(G,mood,mood==='cheer'?'bounce':'')}<div class="bubble">${text}</div>`}
+
+/* ---------- step-by-step coach ---------- */
+const stripT=t=>String(t).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+const half2=v=>Number.isInteger(v)?String(v):`${Math.floor(v)} and a half`;
+function insertSteps(arr){ST.list.splice(ST.i+1,0,...arr)}
+function buildSteps(){
+  const c=P.ctx,L=[];
+  const final=t=>({title:'Answer it',prompt:t,final:true});
+  const rule={title:'Remember the rule',prompt:'What makes two fractions the same amount?',choices:shuffle([
+    {label:'Multiply the top and bottom by the same number',ok:true,sum:'Multiply the top and bottom by the same number.'},
+    {label:'Add the same number to the top and bottom',why:'Adding changes the size. Try multiplying.'},
+    {label:'Make only the top number bigger',why:'If only the top changes, the amount changes too.'}])};
+  switch(P.type){
+    case 'compare':case 'story':{
+      const fs=commonList(),names=P.names.slice(0,fs.length);
+      const want=P.type==='story'?P.ask:'more';
+      const wantW=want==='more'?'more':`the ${want}`,oppW=want==='more'?'less':want==='most'?'the least':'the most';
+      const winner=P.type==='story'?+P.answer:(P.answer==='>'?0:P.answer==='<'?1:-1);
+      const big=want==='least'?'smallest':'biggest';
+      const same=fs.every(f=>f.d===fs[0].d),sameTop=fs.every(f=>f.n===fs[0].n);
+      const maxd=Math.max(...fs.map(f=>f.d));
+      const winC=lab=>{const a=fs.map((f,i)=>({label:`${names[i]} ${lab(f)}`,ok:i===winner,why:'Look at the numbers again.',sum:`${names[i]} ${lab(f)}`}));if(P.type==='compare')a.push({label:'They’re the same',ok:winner===-1,why:'Look again. Are they really equal?',sum:'They’re the same.'});return a};
+      L.push({title:'Read the question',prompt:'What does the question want to know?',choices:shuffle([
+        {label:`Who ${c.verb} ${wantW}`,ok:true},
+        {label:`Who ${c.verb} ${oppW}`,why:`Read it again. Listen for “${want}.”`},
+        {label:'How much they had all together',why:'We’re not adding. We’re comparing.'}])});
+      L.push({title:'Look at the bottom numbers',prompt:`The bottom numbers are ${fs.map(f=>f.d).join(', ')}. Are they all the same?`,choices:[
+        {label:'Yes, all the same',ok:same,why:'Look closely at each bottom number.',sum:'Yes, they’re the same.'},
+        {label:'No, they’re different',ok:!same,why:'Look closely. Are any of them different?',sum:'No, they’re different.'}]});
+      const plans=[{label:'Compare the top numbers',ok:same,strat:'samebottom',why:'The bottoms are different, so the pieces are different sizes. Comparing tops won’t work yet.',
+        then:()=>insertSteps([{title:'Compare the top numbers',prompt:`The pieces are the same size, so a bigger top means more. Who has the ${big} top number?`,choices:winC(f=>`has ${f.n}`)}])}];
+      if(sameTop&&!same)plans.push({label:'Same top number, so compare the piece sizes',ok:true,strat:'sametop',
+        then:()=>insertSteps([{title:'Compare the piece sizes',prompt:`Everyone has ${fs[0].n}. A smaller bottom number means bigger pieces. Who had the ${want==='least'?'smaller':'bigger'} pieces?`,choices:winC(f=>`(cut into ${f.d})`)}])});
+      plans.push({label:'Make the bottom numbers match',ok:!same,strat:'common',why:'They already match! Pick “Compare the top numbers.”',
+        then:()=>insertSteps([
+          {title:'Find a bottom number for everyone',prompt:`What number can ${fs.map(f=>f.d).join(' and ')} all turn into? Hint: count by ${maxd}s.`,
+            html:()=>`<div class="srow">${intIn('s-L','wide')}</div>`,
+            check:()=>{const v=valN('s-L');if(v===null||!Number.isInteger(v)||v<1)return{msg:'Type a number.'};const bad=fs.find(f=>v%f.d!==0);if(bad)return{msg:`${bad.d} doesn’t go into ${v} evenly. Try counting by ${maxd}s.`};if(v>300)return{msg:'Try a smaller number.'};ST.L=v;return{ok:true,sum:`Everyone can use ${v} as the bottom number.`}}},
+          {title:'Change each fraction',prompt:'Multiply the top by the same number you multiplied the bottom by.',
+            html:()=>fs.map((f,i)=>`<div class="srow"><span class="nm">${names[i]}</span>${fr(f,'mid')}<span class="op">× ${ST.L/f.d} =</span><span class="frac mid"><span class="n">${intIn('s-t'+i)}</span><span class="d">${ST.L}</span></span></div>`).join(''),
+            check:()=>{for(let i=0;i<fs.length;i++){const f=fs[i],v=valN('s-t'+i);if(v!==f.n*ST.L/f.d)return{msg:`Check ${names[i]}: ${f.n} × ${ST.L/f.d} = ?`}}const w=fs.map(f=>`${txt(f)}=${f.n*ST.L/f.d}/${ST.L}`).join(', ');ST.work.push(w);return{ok:true,sum:w}}},
+          {title:'Compare the new top numbers',prompt:()=>`Now the bottoms match. Who has the ${big} top number?`,choices:()=>winC(f=>`has ${f.n*ST.L/f.d}`)}])});
+      if(P.type==='compare'){
+        const side=(f,v)=>Math.sign(f.n-f.d*v);
+        [[.5,'½','half'],[1,'1 whole','whole']].forEach(([v,lab,id])=>{
+          const sa=side(fs[0],v),sb=side(fs[1],v);
+          if(sa&&sb&&sa!==sb)plans.push({label:`Compare each one to ${lab}`,ok:true,strat:id,then:()=>insertSteps([
+            ...fs.map((f,i)=>{const ref=v===.5?f.d/2:f.d;return{title:`Check ${names[i]} against ${lab}`,prompt:v===.5?`Half of ${f.d} is ${half2(ref)}. Is ${f.n} more or less than ${half2(ref)}?`:`${f.d} pieces make 1 whole. Is ${f.n} more or less than ${f.d}?`,
+              choices:[{label:`More than ${lab}`,ok:f.n>ref,why:`Compare ${f.n} and ${half2(ref)} again.`},{label:`Less than ${lab}`,ok:f.n<ref,why:`Compare ${f.n} and ${half2(ref)} again.`}]}}),
+            {title:'Decide',prompt:`One is more than ${lab} and one is less. Who ${c.verb} more?`,choices:winC(()=>'')}])});
+        });
+      }
+      L.push({title:'Pick a plan',prompt:'How will you compare them?',choices:plans});
+      L.push(final(P.type==='compare'?'You know the answer! Tap it above, then tap “Check my answer.”':'You know the answer! Tap that friend above, then tap “Check my answer.”'));
+      break}
+    case 'benchmark':{
+      const half=P.t.d===2,a=P.a,ref=half?a.d/2:a.d;
+      L.push({title:'Read the question',prompt:'What are we comparing to?',choices:[
+        {label:'Half (½)',ok:half,why:`Listen again. It says ${half?c.half:c.whole}.`},
+        {label:'1 whole',ok:!half,why:`Listen again. It says ${half?c.half:c.whole}.`}]});
+      L.push(half?{title:'Find half of the bottom number',prompt:`The bottom number is ${a.d}. What is half of ${a.d}?`,html:()=>`<div class="srow">${decIn('s-h')}</div>`,
+          check:()=>{const v=valN('s-h');if(v===null)return{msg:'Type a number.'};if(Math.abs(v-a.d/2)>1e-9)return{msg:`Split ${a.d} into 2 equal groups. How many are in each group?`};ST.strats.push('halfof');ST.work.push(`half of ${a.d} = ${v}`);return{ok:true,sum:`Half of ${a.d} is ${half2(ref)}.`}}}
+        :{title:'Find 1 whole',prompt:`It’s cut into ${a.d} pieces. How many pieces make 1 whole?`,html:()=>`<div class="srow">${intIn('s-w')}</div>`,
+          check:()=>{const v=valN('s-w');if(v!==a.d)return{msg:`If something is cut into ${a.d} pieces, how many pieces is the whole thing?`};ST.strats.push('wholeis');ST.work.push(`1 = ${a.d}/${a.d}`);return{ok:true,sum:`${a.d} pieces make 1 whole.`}}});
+      L.push({title:'Compare the top number',prompt:`${N(0)} had ${a.n} pieces. Is ${a.n} more than, less than, or equal to ${half2(ref)}?`,choices:[
+        {label:'More',ok:a.n>ref,why:'Compare the two numbers again.',sum:`${a.n} is more than ${half2(ref)}.`},
+        {label:'Less',ok:a.n<ref,why:'Compare the two numbers again.',sum:`${a.n} is less than ${half2(ref)}.`},
+        {label:'Equal',ok:a.n===ref,why:'Compare the two numbers again.',sum:`${a.n} is equal to ${half2(ref)}.`}]});
+      L.push(final('You know the answer! Tap it above, then tap “Check my answer.”'));
+      break}
+    case 'missing':{
+      const Lf=P.left,full=F(P.right.n,P.right.d),m=P.missing,up=full.d>Lf.d,K=up?full.d/Lf.d:Lf.d/full.d,op=up?'×':'÷';
+      const [a1,b1,a2,b2]=m==='n'?[Lf.d,full.d,Lf.n,full.n]:[Lf.n,full.n,Lf.d,full.d];
+      const known=m==='n'?'bottom':'top',other=m==='n'?'top':'bottom';
+      L.push({title:'What stays the same?',prompt:`What do ${N(0)} and ${N(1)} need to have the same?`,choices:shuffle([
+        {label:'The same amount',ok:true},
+        {label:'The same number of pieces',why:'Their pieces are different sizes, so the number of pieces will be different.'}])});
+      L.push({title:`Look at the ${known} numbers`,prompt:`The ${known} number went from ${a1} to ${b1}. What did it get ${up?'multiplied':'divided'} by?`,
+        html:()=>`<div class="srow">${a1} <span class="op">${op}</span> ${intIn('s-k')} <span class="op">=</span> ${b1}</div>`,
+        check:()=>{const v=valN('s-k');if(v!==K)return{msg:up?`Count by ${a1}s until you reach ${b1}. How many jumps?`:`How many groups of ${b1} fit in ${a1}?`};ST.strats.push(up?'times':'divide');ST.work.push(`${op} ${K}`);return{ok:true,sum:`${a1} ${op} ${K} = ${b1}`}}});
+      L.push({title:`Do the same to the ${other}`,prompt:`Whatever you did to the ${known}, do to the ${other}.`,
+        html:()=>`<div class="srow">${a2} <span class="op">${op} ${K} =</span> ${intIn('s-x')}</div>`,
+        check:()=>{const v=valN('s-x');if(v!==b2)return{msg:`${a2} ${op} ${K} = ?`};const el=document.getElementById('m');if(el)el.value=b2;return{ok:true,sum:`${a2} ${op} ${K} = ${b2}`}}});
+      L.push(final(`${N(1)} needs ${b2}. It’s in ${N(1)}’s card now. Tap “Check my answer.”`));
+      break}
+    case 'equiv':{
+      const B=P.base;
+      L.push(rule);
+      L.push({title:'Find each multiplier',prompt:`What was ${B.d} multiplied by to make each friend’s bottom number? If no whole number works, tap “None.”`,
+        html:()=>P.opts.map((o,i)=>`<div class="srow"><span class="nm">${N(i+1)}</span>${B.d} <span class="op">×</span> ${intIn('s-k'+i)} <span class="op">=</span> ${o.f.d}<button class="schoice none" data-i="${i}" aria-pressed="false">None</button></div>`).join(''),
+        wire:box=>box.querySelectorAll('.none').forEach(b=>b.onclick=()=>{const on=b.getAttribute('aria-pressed')!=='true';b.setAttribute('aria-pressed',on);const inp=document.getElementById('s-k'+b.dataset.i);if(on)inp.value='';inp.disabled=on}),
+        check:()=>{ST.K=[];for(let i=0;i<P.opts.length;i++){const o=P.opts[i],K=o.f.d/B.d,none=document.querySelector(`.none[data-i="${i}"]`).getAttribute('aria-pressed')==='true',v=valN('s-k'+i);
+          if(Number.isInteger(K)){if(none||v!==K)return{msg:`Check ${N(i+1)}: ${B.d} × ? = ${o.f.d}. Count by ${B.d}s.`};ST.K[i]=K}
+          else{if(!none)return{msg:`Check ${N(i+1)}: does ${B.d} × ${v===null?'a number':v} really make ${o.f.d}?`};ST.K[i]=null}}
+          ST.strats.push('times');return{ok:true,sum:P.opts.map((o,i)=>`${N(i+1)}: ${ST.K[i]?'× '+ST.K[i]:'none'}`).join(', ')}}});
+      L.push({title:'Check the top numbers',prompt:`Multiply ${B.n} by the same number. Does it match each friend’s top number?`,
+        html:()=>P.opts.map((o,i)=>ST.K[i]==null?'':`<div class="srow"><span class="nm">${N(i+1)}</span>${B.n} <span class="op">× ${ST.K[i]} =</span> ${intIn('s-t'+i)} <span class="muted" style="font-size:17px">${N(i+1)}’s top is ${o.f.n}</span></div>`).join(''),
+        check:()=>{for(let i=0;i<P.opts.length;i++){if(ST.K[i]==null)continue;if(valN('s-t'+i)!==B.n*ST.K[i])return{msg:`Check ${N(i+1)}: ${B.n} × ${ST.K[i]} = ?`}}
+          const match=P.opts.map((o,i)=>o.ok?N(i+1):null).filter(Boolean);ST.work.push('matched: '+match.join(', '));return{ok:true,sum:`Top and bottom both match for ${match.join(' and ')}.`}}});
+      L.push(final('Now tap every friend whose top and bottom both matched, then tap “Check my answer.”'));
+      break}
+    case 'findtwo':{
+      const B=P.base;
+      L.push(rule);
+      const mk=(idx,prompt)=>({title:`Make ${N(idx+1)}’s fraction`,prompt,
+        html:()=>`<div class="srow">Multiply by ${intIn('s-k'+idx)}</div><div class="srow"><span class="nm">Top</span>${B.n} × your number = ${intIn('s-t'+idx)}</div><div class="srow"><span class="nm">Bottom</span>${B.d} × your number = ${intIn('s-b'+idx)}</div>`,
+        check:()=>{const k=valN('s-k'+idx),t=valN('s-t'+idx),b=valN('s-b'+idx);
+          if(k===null||!Number.isInteger(k)||k<2)return{msg:'Pick a whole number like 2, 3, or 4.'};
+          if(idx===1&&k===ST.k0)return{msg:'Pick a different number than last time.'};
+          if(t!==B.n*k)return{msg:`Top: ${B.n} × ${k} = ?`};if(b!==B.d*k)return{msg:`Bottom: ${B.d} × ${k} = ?`};
+          if(idx===0){ST.k0=k;ST.strats.push('times')}
+          const tn=document.getElementById('f'+idx+'n'),td=document.getElementById('f'+idx+'d');if(tn)tn.value=t;if(td)td.value=b;
+          ST.work.push(`× ${k} → ${t}/${b}`);return{ok:true,sum:`${B.n}/${B.d} × ${k} = ${t}/${b}`}}});
+      L.push(mk(0,'Pick a number to multiply by, like 2 or 3. Then multiply the top and the bottom by it.'));
+      L.push(mk(1,'Now pick a different number and do it again.'));
+      L.push(final('Both fractions are in the cards now. Tap “Check my answer.”'));
+      break}
+  }
+  return L;
+}
+function renderSteps(silent){
+  const box=$('#steps');if(!box)return;box.hidden=false;
+  const L=ST.list,cur=L[ST.i];
+  const val=(x)=>typeof x==='function'?x():x;
+  cur._choices=val(cur.choices);
+  box.innerHTML=`<h2 class="h2">Break it down</h2><ol class="steplist">${L.map((s,j)=>{
+    if(j<ST.i)return `<li class="step done"><span class="num" aria-label="done">✓</span><div class="sbody"><div class="stt">${s.title}</div><div class="sum">${s.summary||''}</div></div></li>`;
+    if(j>ST.i)return `<li class="step later"><span class="num">${j+1}</span><div class="sbody"><div class="stt">${s.title}</div></div></li>`;
+    return `<li class="step now" aria-current="step"><span class="num">${j+1}</span><div class="sbody"><div class="stt">${s.title}</div><p class="sp">${val(s.prompt)}</p>
+      ${s._choices?`<div class="schoices">${s._choices.map((c,k)=>`<button class="schoice" data-k="${k}">${c.label}</button>`).join('')}</div>`:''}
+      ${s.html?val(s.html)+'<button class="btn small primary sgo" id="stepok">Check this step</button>':''}
+      <p class="snote" id="snote" aria-live="polite"></p></div></li>`;
+  }).join('')}</ol>`;
+  const note=t=>{$('#snote').textContent=t;speak(t)};
+  const advance=(sum,c)=>{cur.summary=sum;if(c&&c.strat)ST.strats.push(c.strat);if(c&&c.then)c.then();ST.i++;renderSteps()};
+  box.querySelectorAll('.schoice[data-k]').forEach(b=>b.onclick=()=>{const c=cur._choices[+b.dataset.k];if(c.ok)advance(c.sum||c.label,c);else{ST.slips++;b.classList.add('wrong');note(c.why||'Not quite. Try another one.')}});
+  const ok=$('#stepok');if(ok)ok.onclick=()=>{const r=cur.check();if(r.ok)advance(r.sum);else{ST.slips++;note(r.msg)}};
+  if(cur.wire)cur.wire(box);
+  if(cur.final){ST.done=true;$('#ask').classList.remove('waiting');setGuide('happy','You did every step! Now finish it.')}
+  updateGo();
+  if(!silent){speak(`Step ${ST.i+1}. ${cur.title}. ${stripT(val(cur.prompt))}`);
+    const first=box.querySelector('.step.now input');if(first&&!('ontouchstart' in window))first.focus()}
+}
+
+function startSession(kind,skills){M={kind,skills,i:0,results:[],stars:0};renderProblem()}
+
+function askHTML(){
+  const sc=scene(f=>fr(f,'sm')),c=P.ctx;
+  const head=`<p class="story">${c.emoji} ${sc.story}</p><p class="q">${sc.q}</p>`;
+  switch(P.type){
+    case 'compare':return head+`<div class="cards">${card(0,fr(P.a,'mid'),{pick:1,v:'a'})}${card(1,fr(P.b,'mid'),{pick:1,v:'b'})}</div>
+      <div class="choices"><button class="choice pick" data-v="same" aria-pressed="false">Same amount</button></div>`;
+    case 'benchmark':{const t=P.t.d===2?c.half:c.whole;return head+`<div class="cards">${card(0,fr(P.a,'mid'))}</div>
+      <div class="choices">${[['greater','More than '+t],['less','Less than '+t],['equal','Exactly '+t]].map(([v,l])=>`<button class="choice pick" data-v="${v}" aria-pressed="false">${l}</button>`).join('')}</div>`}
+    case 'missing':{const r=P.right,m=P.missing;
+      return head+`<div class="cards eqrow">${card(0,fr(P.left,'mid'))}<span class="op">=</span>${card(1,`<span class="frac mid"><span class="n">${m==='n'?intIn('m'):r.n}</span><span class="d">${m==='d'?intIn('m'):r.d}</span></span>`)}</div>`}
+    case 'equiv':return head+`<div class="cards">${card(0,fr(P.base,'mid'),{hero:1})}</div>
+      <div class="cards">${P.opts.map((o,i)=>card(i+1,fr(o.f,'mid'),{multi:1,v:i})).join('')}</div>`;
+    case 'findtwo':{const blank=i=>`<span class="frac mid"><span class="n">${intIn('f'+i+'n')}</span><span class="d">${intIn('f'+i+'d')}</span></span>`;
+      return head+`<div class="cards eqrow">${card(0,fr(P.base,'mid'),{hero:1})}<span class="op">=</span>${card(1,blank(0))}<span class="op">=</span>${card(2,blank(1))}</div>`}
+    case 'story':return head+`<div class="cards">${P.fs.map((f,i)=>card(i,fr(f,'mid'),{pick:1,v:String(i)})).join('')}</div>`;
+  }
+}
+function sayPrompt(){const sc=scene(spoken);return `${sc.story} ${sc.q}`}
+function hintHTML(){
+  const c=P.ctx,rows=rowsFor();let t,marks;
+  switch(P.type){
+    case 'compare':t=`Here’s a picture. Can you cut both into the same size pieces to compare?`;break;
+    case 'benchmark':t=P.t.d===2?`What is half of ${P.a.d}? Did ${N(0)} ${c.base} more or less than that many pieces?`:`${P.a.d} pieces make ${c.whole}. Did ${N(0)} ${c.base} more or less than ${P.a.d} pieces?`;marks=[{v:P.t.d===2?.5:1,label:P.t.d===2?'½':'1'}];break;
+    case 'missing':t=`${N(1)}’s pieces are a different size. How many of them fit in ${N(0)}’s amount?`;break;
+    case 'equiv':t=`Try cutting each of ${N(0)}’s pieces into 2, 3, or 4 smaller pieces. Whose fractions can you make?`;break;
+    case 'findtwo':t=`Try cutting every piece in half. How many pieces is it now? How many are there in all?`;break;
+    case 'story':t=`Cut everything into the same size pieces, then count who has the most.`;break;
+  }
+  return `<p>${t}</p>${model(rows,marks)}`;
+}
+function answered(){
+  switch(P.type){
+    case 'compare':case 'benchmark':case 'story':return ans!==null;
+    case 'missing':return valN('m')!==null;
+    case 'equiv':return ans.size>0;
+    case 'findtwo':return ['f0n','f0d','f1n','f1d'].every(i=>valN(i)!==null);
+  }
+}
+function updateGo(){
+  const g=$('#go');if(!g)return;
+  if(phase==='answer')g.disabled=ST?!(ST.done&&answered()):!answered();
+  else if(phase==='explain')g.disabled=chosen.size===0||!answered();
+  else g.disabled=false;
+}
+
+function renderProblem(){
+  app.className='';
+  const skill=M.skills[M.i];
+  P=dress(GEN[skill](S.levels[skill]));P.level=S.levels[skill];G=(P.type==='missing'||P.type==='findtwo')?P.who[1]:P.who[0];
+  ans=P.type==='equiv'?new Set():null;chosen=new Set();hintUsed=false;phase='answer';pad=null;
+  app.innerHTML=`
+  <div class="topbar">
+    <button class="iconbtn leave" id="quit">Leave</button>
+    <ol class="prog" aria-label="Problem ${M.i+1} of ${M.skills.length}">${M.skills.map((s,j)=>`<li class="${j<M.i?(M.results[j].correct?'done':'miss'):j===M.i?'now':''}"></li>`).join('')}</ol>
+    <button class="iconbtn" id="readbtn" aria-label="Read it to me">🔊</button>
+  </div>
+  <p class="kicker">Problem ${M.i+1} of ${M.skills.length}. ${SKILLS[P.skill].name}</p>
+  <div class="guide" id="guide"></div>
+  <section id="ask">${askHTML()}</section>
+  <section id="steps" class="steps" hidden></section>
+  <div class="hintrow"><button class="btn ghost small" id="hint">Show me a picture</button></div>
+  <div class="hintbox" id="hintbox"></div>
+  <section id="explain" class="explain" hidden></section>
+  <section id="fb" hidden></section>
+  <div class="actions"><button class="btn primary" id="go" disabled>Next: explain it</button></div>`;
+
+  setGuide('normal',guideLine());
+  const quit=$('#quit');let armed=false;
+  quit.onclick=()=>{if(armed){renderHome();return}armed=true;quit.textContent='Tap again';setTimeout(()=>{armed=false;if(quit.isConnected)quit.textContent='Leave'},2500)};
+  $('#readbtn').onclick=()=>{
+    if(!canSpeak()){setGuide('think','Read-aloud isn’t working in this browser. Try opening the app in Safari.');return}
+    if(speechSynthesis.speaking||sayLive.length){stopSpeaking();return}
+    let t;
+    if(phase==='feedback'&&lastResult)t=lastResult.say;
+    else if(ST&&ST.list[ST.i]){const s=ST.list[ST.i],pr=typeof s.prompt==='function'?s.prompt():s.prompt;t=`${sayPrompt()} Step ${ST.i+1}. ${s.title}. ${stripT(pr)}`}
+    else if(phase==='explain')t='How do you know? Tap every way you figured it out.';
+    else t=sayPrompt();
+    speak(t,true);
+  };
+  $('#hint').onclick=()=>{hintUsed=true;setGuide('think','Here’s a picture. Take a look!');$('#hintbox').innerHTML=hintHTML();speak($('#hintbox p').textContent)};
+
+  app.querySelectorAll('#ask .pick').forEach(b=>b.onclick=()=>{
+    ans=b.dataset.v;
+    app.querySelectorAll('#ask .pick').forEach(x=>{x.setAttribute('aria-pressed',x===b);const sl=x.querySelector('.chslot');if(sl)sl.innerHTML=ch(x.dataset.ch,x===b?'happy':'normal')});
+    speak(b.dataset.say||b.textContent);updateGo();
+  });
+  app.querySelectorAll('#ask .multi').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;if(ans.has(i))ans.delete(i);else ans.add(i);const on=ans.has(i);
+    b.setAttribute('aria-pressed',on);const sl=b.querySelector('.chslot');if(sl)sl.innerHTML=ch(b.dataset.ch,on?'happy':'normal');
+    if(on)speak(b.dataset.say);updateGo();
+  });
+  app.oninput=updateGo;
+  $('#go').onclick=onGo;
+  window.scrollTo(0,0);
+  if(S.steps!==false){
+    ST={list:buildSteps(),i:0,slips:0,strats:[],work:[],done:false};
+    $('#ask').classList.add('waiting');$('#go').textContent='Check my answer';
+    renderSteps(true);
+    const s0=ST.list[0];speak(`${sayPrompt()} Let’s break it down. Step 1. ${s0.title}. ${stripT(s0.prompt)}`);
+  }else{ST=null;speak(sayPrompt())}
+}
+
+function onGo(){
+  if(phase==='answer'){if(ST)check();else showExplain()}
+  else if(phase==='explain')check();
+  else{M.i++;if(M.i<M.skills.length)renderProblem();else renderEnd()}
+}
+
+/* ---------- explain ---------- */
+function strategiesFor(){
+  if(P.type==='compare'||P.type==='story')return[
+    {id:'samebottom',label:'Same bottom number',sub:'so I compared the top numbers'},
+    {id:'sametop',label:'Same top number',sub:'a smaller bottom means bigger pieces'},
+    {id:'common',label:'Made the bottoms match',sub:'show your numbers',work:'common'},
+    {id:'half',label:'Compared to ½'},
+    {id:'whole',label:'Compared to 1 whole'},
+    {id:'draw',label:'I drew it',work:'draw'}];
+  if(P.type==='benchmark')return[
+    {id:'halfof',label:'Found half of the bottom number',work:'halfof'},
+    {id:'wholeis',label:'Thought about what makes 1 whole',work:'wholeis'},
+    {id:'common',label:'Made the bottoms match',sub:'show your numbers',work:'common'},
+    {id:'draw',label:'I drew it',work:'draw'}];
+  return[
+    {id:'times',label:'Multiplied the top and bottom by the same number',work:'times'},
+    {id:'divide',label:'Divided the top and bottom by the same number',work:'divide'},
+    {id:'bars',label:'Pictured the bars in my head'},
+    {id:'draw',label:'I drew it',work:'draw'}];
+}
+function commonList(){return P.type==='compare'?[P.a,P.b]:P.type==='benchmark'?[P.a,P.t]:P.fs}
+function workHTML(w){
+  switch(w){
+    case 'common':{const fs=commonList(),names=P.type==='benchmark'?null:P.names;
+      return `<p>Make the bottom numbers match:</p>${fs.map((f,i)=>`<div class="wrow">${names?`<span class="nm">${names[i]}</span>`:''}${fr(f,'mid')}<span class="op">=</span><span class="frac mid"><span class="n">${intIn('c'+i+'n')}</span><span class="d">${intIn('c'+i+'d')}</span></span></div>`).join('')}`}
+    case 'halfof':return `<div class="wrow">Half of ${P.a.d} is <span class="inline-in">${decIn('w-half')}</span></div>`;
+    case 'wholeis':return `<div class="wrow">1 whole = <span class="frac mid"><span class="n">${intIn('w-whole')}</span><span class="d">${P.a.d}</span></span></div>`;
+    case 'times':return `<div class="wrow">I multiplied the top and bottom by <span class="inline-in">${intIn('w-times')}</span></div>`;
+    case 'divide':return `<div class="wrow">I divided the top and bottom by <span class="inline-in">${intIn('w-div')}</span></div>`;
+    case 'draw':return `<p>Draw it with your finger or pencil.</p><div class="padhost"></div>`;
+  }
+}
+function showExplain(){
+  phase='explain';
+  const ex=$('#explain');ex.hidden=false;
+  const strats=strategiesFor();
+  ex.innerHTML=`<h2 class="h2">How do you know?</h2><p class="muted">Tap every way you figured it out.</p>
+    <div class="chips">${strats.map(s=>`<button class="chip" data-id="${s.id}" aria-pressed="false"><span class="cl">${s.label}</span>${s.sub?`<span class="cs">${s.sub}</span>`:''}</button>`).join('')}</div>
+    <div id="works">${strats.filter(s=>s.work).map(s=>`<div class="work" data-for="${s.id}" hidden>${workHTML(s.work)}</div>`).join('')}</div>`;
+  ex.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.id,on=!chosen.has(id);
+    if(on)chosen.add(id);else chosen.delete(id);
+    b.setAttribute('aria-pressed',on);
+    const w=ex.querySelector(`.work[data-for="${id}"]`);
+    if(w){w.hidden=!on;if(on&&id==='draw'&&!pad)pad=makePad(w.querySelector('.padhost'))}
+    if(on)speak(b.querySelector('.cl').textContent);
+    updateGo();
+  });
+  $('#go').textContent='Check my answer';
+  setGuide('normal','How do you know? Show me!');
+  updateGo();
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  ex.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  speak('How do you know? Tap every way you figured it out.');
+}
+function makePad(host){
+  host.innerHTML=`<div class="padwrap"><canvas class="pad" aria-label="Drawing space"></canvas><button class="btn small ghost" type="button">Clear</button></div>`;
+  const c=host.querySelector('canvas'),ctx=c.getContext('2d');let drawing=false,last=null;
+  const p={hasInk:false};
+  const dpr=window.devicePixelRatio||1;
+  c.width=c.clientWidth*dpr;c.height=c.clientHeight*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.lineCap='round';ctx.lineJoin='round';
+  const ink=()=>getComputedStyle(document.documentElement).getPropertyValue('--orange').trim()||'#f0a457';
+  const pt=e=>{const r=c.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+  c.addEventListener('pointerdown',e=>{drawing=true;try{c.setPointerCapture(e.pointerId)}catch(_){}last=pt(e);ctx.fillStyle=ink();ctx.beginPath();ctx.arc(last.x,last.y,2,0,7);ctx.fill();p.hasInk=true});
+  c.addEventListener('pointermove',e=>{if(!drawing)return;const q=pt(e);ctx.strokeStyle=ink();ctx.lineWidth=e.pointerType==='pen'?2+(e.pressure||.5)*3:4;ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(q.x,q.y);ctx.stroke();last=q});
+  ['pointerup','pointercancel'].forEach(t=>c.addEventListener(t,()=>{drawing=false}));
+  host.querySelector('button').onclick=()=>{ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,c.width,c.height);ctx.restore();p.hasInk=false};
+  p.snapshot=()=>{try{const w=320,h=Math.max(1,Math.round(320*c.height/c.width));const o=document.createElement('canvas');o.width=w;o.height=h;const x=o.getContext('2d');x.fillStyle=getComputedStyle(document.body).backgroundColor;x.fillRect(0,0,w,h);x.drawImage(c,0,0,w,h);return o.toDataURL('image/jpeg',.6)}catch(e){return null}};
+  return p;
+}
+
+/* ---------- checking ---------- */
+const pairK=(x,y,k)=>(x.n*k===y.n&&x.d*k===y.d)||(y.n*k===x.n&&y.d*k===x.d);
+function readFrac(pre){const n=valN(pre+'n'),d=valN(pre+'d');return(n===null||d===null)?null:F(n,d)}
+
+function evaluateAnswer(){
+  const r={correct:false,html:'',say:'',her:'',additive:false},c=P.ctx;
+  switch(P.type){
+    case 'compare':{
+      const sym=P.answer,win=sym==='>'?'a':sym==='<'?'b':'same';
+      r.correct=ans===win;r.her=ans==='same'?'same amount':N(ans==='a'?0:1);
+      const lead=win==='same'?`${N(0)} and ${N(1)} ${c.verb} the same amount!`:`${N(win==='a'?0:1)} ${c.verb} more.`;
+      r.html=`<p><b>${lead}</b></p><div class="cmp mid">${fr(P.a,'mid')}<b>${sym}</b>${fr(P.b,'mid')}</div>${commonProof([P.a,P.b],[N(0),N(1)])}${model(rowsFor())}`;
+      r.say=`${lead} ${spoken(P.a)} is ${symWord(sym)} ${spoken(P.b)}.`;break}
+    case 'benchmark':{
+      r.correct=ans===P.answer;r.her=ans;const a=P.a,half=P.t.d===2,t=half?c.half:c.whole;
+      const rel=P.answer==='equal'?'equal to':P.answer==='greater'?'more than':'less than';
+      const why=half?`Half of ${a.d} is ${a.d/2}. ${N(0)} had ${a.n}, which is ${rel} ${a.d/2}.`:`${a.d} pieces make ${t}. ${N(0)} had ${a.n}, which is ${rel} ${a.d}.`;
+      const end=`So ${N(0)} ${c.verb} ${P.answer==='equal'?'exactly':P.answer==='greater'?'more than':'less than'} ${t}.`;
+      r.html=`<p><b>${end}</b></p><p>${why}</p>${model(rowsFor(),[{v:half?.5:1,label:half?'½':'1'}])}`;
+      r.say=`${end} ${why}`;break}
+    case 'missing':{
+      const her=valN('m');r.correct=her===P.answer;
+      const L=P.left,full=F(P.right.n,P.right.d),m=P.missing;
+      r.her=m==='n'?`${her}/${full.d}`:`${full.n}/${her}`;
+      const up=full.d>L.d,k=up?full.d/L.d:L.d/full.d,op=up?'×':'÷';
+      const first=m==='n'?['bottom',L.d,full.d,'top',L.n,full.n]:['top',L.n,full.n,'bottom',L.d,full.d];
+      const why=`The ${first[0]} number went from ${first[1]} to ${first[2]}. That’s ${op} ${k}. Do the same to the ${first[3]}: ${first[4]} ${op} ${k} = ${first[5]}.`;
+      const pieces=c.pieces||'pieces';
+      const real=up?`${N(1)}’s ${pieces} are smaller. Each of ${N(0)}’s ${pieces} is the same as ${k} of ${N(1)}’s.`:`${N(1)}’s ${pieces} are bigger. ${k} of ${N(0)}’s ${pieces} fit in each one of ${N(1)}’s.`;
+      if(m==='n'&&!r.correct&&her!==null&&(her-L.n===full.d-L.d))r.additive=true;
+      r.html=`<p><b>${N(1)} needs ${fr(full,'sm')}. The missing number is ${P.answer}.</b></p><p>${real}</p><p>${why}</p>${r.additive?'<p><b>Watch out:</b> adding the same number to the top and bottom changes the size. Multiply or divide both by the same number instead.</p>':''}${model([{f:L,label:N(0)},{f:full,label:N(1),c:1}])}`;
+      r.say=`The missing number is ${P.answer}. ${real} ${why}`;break}
+    case 'equiv':{
+      const okSet=new Set(P.opts.map((o,i)=>o.ok?i:-1).filter(i=>i>=0));
+      r.correct=okSet.size===ans.size&&[...okSet].every(i=>ans.has(i));
+      r.her=[...ans].map(i=>`${N(i+1)} ${txt(P.opts[i].f)}`).join(', ');
+      r.additive=[...ans].some(i=>P.opts[i].tag==='additive');
+      const B=P.base;
+      r.html=`<p>${N(0)} ${c.verb} ${fr(B,'sm')}.</p>`+P.opts.map((o,i)=>{
+        if(o.ok){const k=o.f.d/B.d;return `<div class="pline"><span class="pn">${N(i+1)}</span>${fr(o.f,'mid')}<span class="ok">Same amount</span><span class="muted">${B.n} × ${k} = ${o.f.n} and ${B.d} × ${k} = ${o.f.d}</span></div>`}
+        const why=o.tag==='additive'?'adding the same number to the top and bottom changes the size':'top and bottom were not multiplied by the same number';
+        return `<div class="pline"><span class="pn">${N(i+1)}</span>${fr(o.f,'mid')}<span class="no">Different</span><span class="muted">${why}</span></div>`;
+      }).join('')+model([{f:B,label:N(0)},...P.opts.map((o,i)=>o.ok?{f:o.f,label:N(i+1),c:1}:null).filter(Boolean)]);
+      const same=P.opts.map((o,i)=>o.ok?N(i+1):null).filter(Boolean);
+      r.say=`${same.join(' and ')} ${c.verb} the same amount as ${N(0)}.`;break}
+    case 'findtwo':{
+      const B=P.base,fs=[readFrac('f0'),readFrac('f1')];
+      const good=fs.map(f=>f&&f.d>0&&eq(f,B)&&txt(f)!==txt(B));
+      const distinct=fs[0]&&fs[1]&&txt(fs[0])!==txt(fs[1]);
+      r.correct=good[0]&&good[1]&&distinct;r.her=fs.map(f=>f?txt(f):'?').join(', ');
+      r.html=fs.map((f,i)=>{
+        const who=`<span class="pn">${N(i+1)}</span>`;
+        if(good[i]){const k=f.d/B.d;const how=Number.isInteger(k)?`${B.n} × ${k} = ${f.n} and ${B.d} × ${k} = ${f.d}`:`same amount, you simplified it`;return `<div class="pline">${who}${fr(f,'mid')}<span class="ok">Same amount</span><span class="muted">${how}</span></div>`}
+        const add=f&&(f.n-B.n)===(f.d-B.d)&&f.n!==B.n;if(add)r.additive=true;
+        const why=txt(f)===txt(B)?`that’s the same fraction as ${N(0)}’s, find a new one`:add?'adding the same number to the top and bottom changes the size':'not the same amount';
+        return `<div class="pline">${who}${fr(f,'mid')}<span class="no">Not this one</span><span class="muted">${why}</span></div>`;
+      }).join('')+(good[0]&&good[1]&&!distinct?'<p>Both wrote the same fraction. Find two different ones.</p>':'')
+        +`<p>Two that work: ${fr(F(B.n*2,B.d*2),'sm')} (cut every piece in 2) and ${fr(F(B.n*3,B.d*3),'sm')} (cut every piece in 3).</p>`
+        +model([{f:B,label:N(0)},{f:F(B.n*2,B.d*2),label:'× 2',c:1},{f:F(B.n*3,B.d*3),label:'× 3',c:2}]);
+      r.say=r.correct?`Both fractions are the same amount as ${N(0)}’s. Nice.`:`Here are two that work: ${spoken(F(B.n*2,B.d*2))} and ${spoken(F(B.n*3,B.d*3))}.`;break}
+    case 'story':{
+      r.correct=ans===P.answer;r.her=N(+ans);const w=N(+P.answer);
+      const lead=`${w} ${c.verb} the ${P.ask==='most'?'most':'least'}.`;
+      r.html=`<p><b>${lead}</b></p>${commonProof(P.fs,P.names)}${model(rowsFor())}`;
+      r.say=lead;break}
+  }
+  return r;
+}
+function evaluateExplain(){
+  if(ST)return{ok:ST.done,notes:ST.done?[]:['Finish the steps first.'],work:ST.work.join('; ')};
+  const notes=[];let ok=chosen.size>0;const work=[];
+  for(const id of chosen){
+    switch(id){
+      case 'samebottom':{const fs=commonList();if(!fs.every(f=>f.d===fs[0].d)){ok=false;notes.push('The bottom numbers weren’t the same in this one, so comparing only the tops doesn’t work.')}break}
+      case 'sametop':{const fs=commonList();if(!fs.every(f=>f.n===fs[0].n)){ok=false;notes.push('The top numbers weren’t the same in this one.')}break}
+      case 'common':{
+        const fs=commonList(),ins=fs.map((_,i)=>readFrac('c'+i));
+        if(ins.some(f=>!f||f.d<=0)){ok=false;notes.push('Fill in every box under “Made the bottoms match.”');break}
+        work.push(fs.map((f,i)=>`${txt(f)}=${txt(ins[i])}`).join(', '));
+        if(!ins.every(f=>f.d===ins[0].d)){ok=false;notes.push('In “Made the bottoms match,” all the bottom numbers need to be the same.')}
+        fs.forEach((f,i)=>{if(!eq(f,ins[i])){ok=false;notes.push(`${txt(ins[i])} isn’t the same size as ${txt(f)}.`)}});
+        break}
+      case 'halfof':{const v=valN('w-half');work.push(`half of ${P.a.d} = ${v}`);if(v===null||Math.abs(v-P.a.d/2)>1e-9){ok=false;notes.push(`Half of ${P.a.d} is ${P.a.d/2}.`)}break}
+      case 'wholeis':{const v=valN('w-whole');work.push(`1 = ${v}/${P.a.d}`);if(v!==P.a.d){ok=false;notes.push(`1 whole is ${P.a.d}/${P.a.d}.`)}break}
+      case 'times':case 'divide':{
+        const v=valN(id==='times'?'w-times':'w-div');work.push(`${id==='times'?'×':'÷'} ${v}`);
+        let base,targets;
+        if(P.type==='missing'){base=P.left;targets=[F(P.right.n,P.right.d)]}
+        else if(P.type==='equiv'){base=P.base;targets=[...ans].map(i=>P.opts[i].f)}
+        else{base=P.base;targets=[readFrac('f0'),readFrac('f1')].filter(Boolean)}
+        if(v===null||!Number.isInteger(v)||v<2||!targets.some(t=>pairK(base,t,v))){ok=false;notes.push(`${id==='times'?'Multiplying':'Dividing'} by ${v===null?'that':v} doesn’t make your fraction. Check which number you used.`)}
+        break}
+      case 'draw':if(!pad||!pad.hasInk){ok=false;notes.push('Draw your picture in the box.')}break;
+    }
+  }
+  return{ok,notes,work:work.join('; ')};
+}
+function adapt(skill,correct){
+  const r=S.runs[skill]||(S.runs[skill]={up:0,down:0});
+  if(correct){r.up++;r.down=0;if(r.up>=2&&S.levels[skill]<3){S.levels[skill]++;r.up=0}}
+  else{r.down++;r.up=0;if(r.down>=2&&S.levels[skill]>1){S.levels[skill]--;r.down=0}}
+}
+function summary(){
+  switch(P.type){
+    case 'compare':return `${txt(P.a)} vs ${txt(P.b)}`;
+    case 'benchmark':return `${txt(P.a)} vs ${P.t.d===2?'1/2':'1'}`;
+    case 'missing':return `${txt(P.left)} = ${P.missing==='n'?'?':P.right.n}/${P.missing==='d'?'?':P.right.d}`;
+    case 'equiv':return `Same as ${txt(P.base)}? (${P.opts.map(o=>txt(o.f)).join(', ')})`;
+    case 'findtwo':return `Two equal to ${txt(P.base)}`;
+    case 'story':return `${P.ask==='most'?'Greatest':'Least'} of ${P.fs.map(txt).join(', ')}`;
+  }
+}
+function check(){
+  if(ST)chosen=new Set(ST.strats);
+  const r=evaluateAnswer(),e=evaluateExplain();
+  phase='feedback';lastResult=r;
+  const earned=(r.correct?1:0)+(e.ok?1:0);
+  M.stars+=earned;
+  const had=unlocked().length;S.totalStars=totalStars()+earned;
+  const fresh=unlocked().slice(had);if(fresh.length)(M.newFriends=M.newFriends||[]).push(...fresh);M.results.push({skill:P.skill,correct:r.correct,stars:earned});
+  adapt(P.skill,r.correct);
+  S.history.push({t:Date.now(),skill:P.skill,level:P.level,text:P.ctx.emoji+' '+summary(),her:r.her,correct:r.correct,expl:e.ok,strategies:[...chosen],work:e.work,hint:hintUsed,additive:r.additive,notes:e.notes,stepped:!!ST,slips:ST?ST.slips:null,drawing:pad&&pad.hasInk?pad.snapshot():null});
+  save();
+  app.querySelectorAll('#steps button,#steps input,#ask button,#ask input,#explain button,#explain input,#hint').forEach(x=>x.disabled=true);
+  $('#explain').classList.add('locked');
+  const fb=$('#fb');fb.hidden=false;fb.className='fb '+(r.correct?'good':'try');
+  const starHTML=`<span class="stars pop" aria-label="${earned} of 2 stars">${'★'.repeat(earned)}<span class="off">${'★'.repeat(2-earned)}</span></span>`;
+  const expl=e.ok?(ST?(ST.slips?`You finished every step and fixed ${ST.slips} ${ST.slips===1?'slip':'slips'} along the way. That’s a star.`:'You nailed every step on the first try. That’s a star.'):'Your explanation checks out. That’s a star.'):`Explanation: ${e.notes.join(' ')}`;
+  fb.innerHTML=`<div class="fbhead">${ch(G,r.correct?'cheer':'think','bounce')}${starHTML}<h2>${r.correct?'Correct!':'Not this time'}</h2></div>
+    <div style="margin-top:12px">${r.html}</div><p class="note">${expl}</p>`;
+  setGuide(r.correct?'cheer':'think',r.correct?pick(CHEERS):'Hmm, let’s look at it together.');
+  if(fresh.length)fb.insertAdjacentHTML('beforeend',`<div class="guide">${ch(fresh[fresh.length-1],'cheer','bounce')}<div class="bubble">You met a new friend: ${CAST[fresh[fresh.length-1]].name}!</div></div>`);
+  const last=M.i===M.skills.length-1;
+  $('#go').textContent=last?'Finish':'Next problem';updateGo();
+  const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  fb.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  r.say=`${r.correct?'Correct!':'Not this time.'} ${r.say} ${e.ok?'Your explanation checks out.':e.notes.join(' ')}`;
+  speak(r.say);
+}
+
+/* ---------- screens ---------- */
+function dayKey(off){const d=new Date();d.setDate(d.getDate()-(off||0));return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`}
+function liveStreak(){return(S.lastDay===dayKey(0)||S.lastDay===dayKey(1))?S.streak:0}
+
+function renderHome(){
+  app.className='home';
+  try{speechSynthesis.cancel()}catch(e){}
+  const streak=liveStreak();
+  const rec=[];
+  if(streak)rec.push(`<b>${streak}</b> ${streak===1?'day':'days'} in a row`);
+  if(S.best)rec.push(`best mission: <b>${S.best}</b> of 12 stars`);
+  app.innerHTML=`
+  <div class="homehero"><div class="herowrap">${ch(pick(unlocked()),'happy')}${[[-70,-50,''],[70,-56,'pk'],[-80,20,'tl'],[84,14,''],[-30,-80,'pk'],[36,-84,'tl'],[0,70,'']].map(([x,y,c])=>`<span class="spark ${c}" style="--dx:${x}px;--dy:${y}px"></span>`).join('')}</div><div><h1 class="title">Mio’s Fraction Lab</h1><p class="sub">Understand the problem. Break it down. Then prove it.</p></div></div>
+  <div class="homegrid">
+  <section class="mission">
+    <h2>Mission ${S.missions+1}</h2>
+    <ol class="checklist trail" aria-label="Mission trail">${MISSION.map((s,i)=>`<li style="--i:${i}"><span class="mm" aria-hidden="true"><span class="plate">${ARROW}${i+1}</span></span>${SKILLS[s].name}</li>`).join('')}<li class="fin" style="--i:${MISSION.length}"><span class="mm flag" aria-hidden="true"><span class="plate">🏁</span></span>Finish line</li></ol>
+    <button class="btn primary wide" id="start">Start mission</button>
+    ${rec.length?`<p class="record">${rec.join(', ')}.</p>`:'<p class="record muted">Each problem has 2 stars: one for the answer, one for proving it.</p>'}
+  </section>
+  <div class="homeside">
+  <section class="panel"><h2 class="h3">Practice one thing</h2>
+  <div class="pgrid">${Object.keys(SKILLS).map(k=>`<button class="btn" data-skill="${k}">${SKILLS[k].name}</button>`).join('')}</div></section>
+  <section class="panel"><h2 class="h3">Your friends <span class="stct">${totalStars()} ★</span></h2>
+  <p class="muted fhint">Earn stars to meet new friends. Tap one to say hi.</p>
+  <div class="friends">${Object.keys(CAST).map(k=>{const c=CAST[k],open=c.at<=totalStars();return `<button class="friend${open?'':' locked'}" data-friend="${k}">${ch(k,open?'happy':'normal')}${open?c.name.split(' ')[0]:c.at+' ★'}</button>`}).join('')}</div></section>
+  </div>
+  </div>
+  <div class="homefoot">
+    <button class="toggle" id="readtoggle" aria-pressed="${S.autoRead}">Read aloud: ${S.autoRead?'on':'off'}</button>
+    <button class="hold" id="grownup">Hold for grown-ups</button>
+  </div>`;
+  $('#start').onclick=()=>startSession('mission',MISSION.slice());
+  app.querySelectorAll('[data-friend]').forEach(b=>b.onclick=()=>{const c=CAST[b.dataset.friend];speak(c.at<=totalStars()?'Hi! I am '+c.name+'. '+c.line:'Earn '+c.at+' stars to meet this friend.',true)});
+  app.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>startSession('practice',Array(6).fill(b.dataset.skill)));
+  $('#readtoggle').onclick=()=>{S.autoRead=!S.autoRead;save();renderHome();if(S.autoRead)speak('Read aloud is on.')};
+  const g=$('#grownup');let tmr;
+  g.addEventListener('pointerdown',()=>{g.classList.add('holding');tmr=setTimeout(renderGrown,1200)});
+  ['pointerup','pointerleave','pointercancel'].forEach(t=>g.addEventListener(t,()=>{clearTimeout(tmr);g.classList.remove('holding')}));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();renderGrown()}});
+  window.scrollTo(0,0);
+}
+function renderEnd(){
+  app.className='';
+  const max=M.skills.length*2,mission=M.kind==='mission';
+  const newBest=mission&&M.stars>S.best;
+  if(mission){
+    S.missions++;if(newBest)S.best=M.stars;
+    if(S.lastDay!==dayKey(0)){S.streak=S.lastDay===dayKey(1)?S.streak+1:1;S.lastDay=dayKey(0)}
+  }
+  save();
+  app.innerHTML=`<section>
+    <h1 class="title">${mission?'Mission complete':'Practice done'}</h1>
+    ${(M.newFriends||[]).length?`<div class="guide">${ch(M.newFriends[M.newFriends.length-1],'cheer','bounce')}<div class="bubble">New friend: ${M.newFriends.map(k=>CAST[k].name).join(' and ')}!</div></div>`:`<div class="guide">${ch(G,'cheer','bounce')}<div class="bubble">${pick(CHEERS)}</div></div>`}
+    <p class="bigstars pop">${M.stars}<span>of ${max} stars</span></p>
+    ${newBest?'<p><span class="badge">New best</span></p>':(mission&&S.best?`<p class="muted">Your best is ${S.best}. Can you beat it next time?</p>`:'')}
+    ${mission?`<p class="record"><b>${S.streak}</b> ${S.streak===1?'day':'days'} in a row.</p>`:''}
+    <ol class="checklist trail" aria-label="Mission trail">${M.results.map((r,i)=>`<li class="${r.correct?'ok':'no'}" style="--i:${i}"><span class="mm" aria-hidden="true"><span class="plate">${r.correct?CHECKI:ARROW}${i+1}</span></span>${SKILLS[r.skill].name}<span class="st">${'★'.repeat(r.stars)}</span></li>`).join('')}<li class="fin" style="--i:${M.results.length}"><span class="mm flag" aria-hidden="true"><span class="plate">🏁</span></span>You made it!</li></ol>
+    <div class="actions"><button class="btn primary" id="again">${mission?'Another mission':'Practice again'}</button><button class="btn" id="home">Home</button></div>
+  </section>`;
+  $('#again').onclick=()=>startSession(M.kind,M.skills.slice());
+  $('#home').onclick=renderHome;
+  window.scrollTo(0,0);
+  speak(`${mission?'Mission complete!':'Practice done!'} You got ${M.stars} out of ${max} stars.${newBest?' That is a new best!':''}${(M.newFriends||[]).length?' You met a new friend, '+CAST[M.newFriends[M.newFriends.length-1]].name+'!':''}`);
+}
+function renderGrown(){
+  app.className='';
+  try{speechSynthesis.cancel()}catch(e){}
+  const H=S.history,by={},strat={};let additive=0,hints=0,explFail=0;
+  Object.keys(SKILLS).forEach(k=>by[k]={n:0,c:0,e:0});
+  let stepped=0,slips=0;H.forEach(h=>{if(h.stepped){stepped++;slips+=h.slips||0}});
+  H.forEach(h=>{const b=by[h.skill];if(!b)return;b.n++;if(h.correct)b.c++;if(h.expl)b.e++;(h.strategies||[]).forEach(s=>strat[s]=(strat[s]||0)+1);if(h.additive)additive++;if(h.hint)hints++;if(!h.expl)explFail++});
+  const stratTxt=Object.entries(strat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${STRAT_NAMES[k]||k} (${v})`).join(', ');
+  const fmt=t=>new Date(t).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  app.innerHTML=`
+  <div class="topbar"><h1 class="gtitle">For grown-ups</h1><button class="btn small" id="home">Back to Mio’s screen</button></div>
+  <p class="muted">Saved on this iPad only. ${H.length} problems logged (latest 60 kept). ${S.missions} missions done.</p>
+  <h2 class="h2">By skill</h2>
+  <div class="tablewrap"><table class="gt"><thead><tr><th>Skill</th><th>Answer right</th><th>Explanation checked out</th><th>Level now</th></tr></thead><tbody>
+  ${Object.keys(SKILLS).map(k=>{const b=by[k];return `<tr><td>${SKILLS[k].name}</td><td>${b.n?`${b.c} of ${b.n}`:'none yet'}</td><td>${b.n?`${b.e} of ${b.n}`:''}</td><td>${S.levels[k]} of 3</td></tr>`}).join('')}
+  </tbody></table></div>
+  <h2 class="h2">How she explains</h2>
+  <p>${stratTxt||'No explanations yet.'}</p>
+  <h2 class="h2">Worth watching</h2>
+  <ul class="watch">
+    <li>Added the same number to the top and bottom: ${additive} ${additive===1?'time':'times'}. This is the mix-up that shows up on her Lesson 8 to 10 worksheets.</li>
+    <li>Used “Show me a picture”: ${hints} of ${H.length}.</li>
+    <li>Step-by-step: ${stepped} problems, with ${slips} wrong taps she fixed along the way. Repeated slips on the same step show where the structure isn’t clicking yet.</li>
+    <li>Explanations that didn’t check out: ${explFail} of ${H.length}.</li>
+  </ul>
+  <h2 class="h2">Recent work</h2>
+  <div class="log">${H.slice(-30).reverse().map(h=>`<div class="entry">
+    <div class="top"><span>${h.text}</span><span class="${h.correct?'ok':'no'}">${h.correct?'Right':'Missed'}${h.expl?', explained':''}</span></div>
+    <div class="meta">${fmt(h.t)}. ${SKILLS[h.skill]?SKILLS[h.skill].name:''}, level ${h.level}. Her answer: ${h.her||'?'}.${h.hint?' Used bars.':''}</div>
+    ${(h.strategies||[]).length?`<div>How: ${h.strategies.map(s=>STRAT_NAMES[s]||s).join(', ')}${h.work?` (${h.work})`:''}</div>`:''}
+    ${h.notes&&h.notes.length&&!h.expl?`<div class="meta">${h.notes.join(' ')}</div>`:''}
+    ${h.drawing?`<img src="${h.drawing}" alt="Mio’s drawing">`:''}
+  </div>`).join('')||'<p class="muted">Nothing yet. Start a mission with Mio.</p>'}</div>
+  <h2 class="h2">Move or back up progress</h2>
+  <p class="muted">Use this to move her stars, friends, and history to another iPad or a new web address. Drawings aren’t included.</p>
+  <div class="actions"><button class="btn" id="bkup">Make a backup code</button><button class="btn" id="rstr">Restore from a code</button></div>
+  <div id="bkbox"></div>
+  <h2 class="h2">Read-aloud voice</h2>
+  <p class="muted">Voices marked Premium or Enhanced sound far more natural. If you don’t see one, download it on the iPad: Settings, Accessibility, Spoken Content, Voices, English, then tap a voice like Ava, Zoe, or Samantha and download the Premium or Enhanced version. Then close and reopen this app.</p>
+  ${canSpeak()?`<div class="srow"><select id="voicesel" class="numin" style="width:auto;min-width:240px;font-size:18px;padding:8px 10px;text-align:left">${englishVoices().map(v=>`<option value="${v.name.replace(/"/g,'&quot;')}"${sayVoice&&v.name===sayVoice.name?' selected':''}>${v.name} (${v.lang})</option>`).join('')||'<option>No voices found yet</option>'}</select><button class="btn small" id="voicetest">Try it</button></div>
+  <div class="srow" style="font-size:18px">Speed ${[['.8','Slower'],['.92','Normal'],['1.05','Faster']].map(([r,l])=>`<button class="schoice" data-rate="${r}" aria-pressed="${String(S.rate||.92)===r||(!S.rate&&r==='.92')}">${l}</button>`).join('')}</div>`:'<p>Read-aloud isn’t available in this browser.</p>'}
+  <h2 class="h2">Settings</h2><p class="muted">Step-by-step walks her through how to approach each problem before she answers. Turn it off when she’s ready to plan on her own; she’ll explain her thinking afterward instead.</p>
+  <div class="actions"><button class="btn" id="steptoggle" aria-pressed="${S.steps!==false}">Step-by-step: ${S.steps!==false?'on':'off'}</button><button class="btn" id="reset">Erase all progress</button></div>`;
+  $('#steptoggle').onclick=()=>{S.steps=S.steps===false;save();renderGrown()};
+  $('#bkup').onclick=async()=>{
+    const data=Object.assign({},S,{history:S.history.map(h=>Object.assign({},h,{drawing:null}))});
+    const code='FL1:'+btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    let copied=false;try{await navigator.clipboard.writeText(code);copied=true}catch(e){}
+    $('#bkbox').innerHTML=`<p>${copied?'Copied. ':''}Save this code somewhere safe, like the Notes app. On the new copy, open this page and tap “Restore from a code.”</p><textarea class="bk" readonly aria-label="Backup code">${code}</textarea>`;
+    const t=$('#bkbox textarea');t.focus();t.select();
+  };
+  $('#rstr').onclick=()=>{
+    $('#bkbox').innerHTML=`<p>Paste the backup code, then tap Restore. This replaces the progress on this iPad.</p><textarea class="bk" id="bkin" aria-label="Paste backup code"></textarea><div class="actions"><button class="btn primary" id="bkgo">Restore</button></div>`;
+    $('#bkgo').onclick=()=>{
+      try{const raw=$('#bkin').value.trim().replace(/^FL1:/,'');const o=JSON.parse(decodeURIComponent(escape(atob(raw))));if(!o||!o.levels)throw 0;
+        const s=freshState();Object.assign(s,o);s.levels=Object.assign(freshState().levels,o.levels);S=s;save();pickVoice();renderGrown();
+        const b=$('#bkbox');if(b)b.innerHTML='<p class="ok">Progress restored.</p>';}
+      catch(e){$('#bkbox').insertAdjacentHTML('beforeend','<p class="no">That code didn’t work. Make sure you copied all of it.</p>')}
+    };
+  };
+  const vsel=$('#voicesel');
+  if(vsel){vsel.onchange=()=>{S.voiceName=vsel.value;save();pickVoice();speak('Hi Mio! Let’s break it down.',true)};
+    $('#voicetest').onclick=()=>speak('Hi Mio! Kelp ate three eighths of a pizza. Mochi ate two sixths. Who ate more?',true);
+    app.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>{S.rate=parseFloat(b.dataset.rate);save();app.querySelectorAll('[data-rate]').forEach(x=>x.setAttribute('aria-pressed',x===b));speak('This is how fast I will read.',true)});}
+  $('#home').onclick=renderHome;
+  const rb=$('#reset');let armed=false;
+  rb.onclick=()=>{if(armed){const keep=S.autoRead;S=freshState();S.autoRead=keep;save();renderGrown();return}armed=true;rb.textContent='Tap again to erase everything';setTimeout(()=>{armed=false;if(rb.isConnected)rb.textContent='Erase all progress'},3000)};
+  window.scrollTo(0,0);
+}
+
+renderHome();
+})();
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})})}
+</script>
+</body>
+</html>
