@@ -1,7 +1,7 @@
 // Offline support for Fraction Lab.
 // The app page is fetched fresh when online (so updates show up right away)
 // and served from the cache when offline. Bump VERSION when you change icons.
-const VERSION = 'fraction-lab-v1';
+const VERSION = 'fraction-lab-v2';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon.svg'];
 
 self.addEventListener('install', e => {

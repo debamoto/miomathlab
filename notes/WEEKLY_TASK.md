@@ -48,6 +48,10 @@ Move processed inbox files to `inbox/done/`.
 - Build, test (jsdom walkthrough, every problem type, 40 runs each, nothing with
   errors, "undefined", or "NaN"), and regenerate index.html with make_site.py.
 - Never change the storage key `fractionlab.v1` or remove saved fields.
+- Add an entry at the top of `RELEASES` in `index.html` (version `YYYY.MM.DD`, the
+  date and time in Pacific, one or two kid-free plain lines on what changed) so
+  the grown-up view shows which version is on the iPad. Run `date` for the time.
+  If `sw.js` or icons changed, bump `VERSION` there too.
 - If code structure changed, update the skill's architecture.md.
 - If the ladder rules need tuning (she's stuck or moving too fast), propose the
   change in the PR. Don't change the rules silently.

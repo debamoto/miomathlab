@@ -338,6 +338,12 @@ const SKILLS={
   story:{name:'Story problem'}
 };
 const MISSION=['compare','benchmark','missing','equiv','findtwo','story'];
+/* newest first; add an entry for every release so the grown-up view shows which version is on the iPad */
+const RELEASES=[
+  {v:'2026.10.19',when:'2026-10-19 8:30 AM Pacific',notes:['Grown-up view now shows release notes with the version and date, so you know which version is on the iPad.']},
+  {v:'2026.10.18',when:'2026-10-18 6:35 PM Pacific',notes:['Make equivalent fractions: clearer hints when she adds instead of multiplies, uses different numbers on top and bottom, or repeats the same multiplier.']},
+  {v:'2026.10.16',when:'2026-10-16',notes:['First version on this site.']}
+];
 const STRAT_NAMES={samebottom:'Same bottom number',sametop:'Same top number',common:'Made the bottoms match',half:'Compared to ½',whole:'Compared to 1 whole',draw:'Drew it',halfof:'Found half of the bottom',wholeis:'What makes 1 whole',times:'Multiplied top and bottom',divide:'Divided top and bottom',bars:'Pictured the bars'};
 
 /* ---------- kawaii cast (original characters) ---------- */
@@ -1337,6 +1343,9 @@ function renderGrown(){
   app.innerHTML=`
   <div class="topbar"><h1 class="gtitle">For grown-ups</h1><button class="btn small" id="home">Back to Mio’s screen</button></div>
   <p class="muted">Saved on this iPad only. The latest 60 problems are kept in detail and daily totals are kept for good. ${S.missions} missions done.</p>
+  <h2 class="h2">Release notes</h2>
+  <p class="muted"><b>Version ${RELEASES[0].v}</b> · ${RELEASES[0].when}. If this doesn’t match what you meant to send, refresh the page.</p>
+  ${RELEASES.map(r=>`<p class="muted"><b>${r.v}</b> · ${r.when}</p><ul class="muted">${r.notes.map(n=>`<li>${n}</li>`).join('')}</ul>`).join('')}
   <h2 class="h2">Mastery ladder</h2>
   <p class="muted">The goal is for her to solve each kind of problem on her own and explain why. Steps fade automatically as she moves up, and come back if she struggles.</p>
   <div class="tablewrap"><table class="gt"><thead><tr><th>Skill</th><th>Stage</th><th>Last 10: right / on her own</th><th>To move up</th></tr></thead><tbody>
