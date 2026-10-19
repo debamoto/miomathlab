@@ -843,7 +843,9 @@ function buildSteps(){
         html:()=>`<div class="srow">Multiply by ${intIn('s-k'+idx)}</div><div class="srow"><span class="nm">Top</span>${B.n} × your number = ${intIn('s-t'+idx)}</div><div class="srow"><span class="nm">Bottom</span>${B.d} × your number = ${intIn('s-b'+idx)}</div>`,
         check:()=>{const k=valN('s-k'+idx),t=valN('s-t'+idx),b=valN('s-b'+idx);
           if(k===null||!Number.isInteger(k)||k<2)return{msg:'Pick a whole number like 2, 3, or 4.'};
-          if(idx===1&&k===ST.k0)return{msg:'Pick a different number than last time.'};
+          if(idx===1&&k===ST.k0)return{msg:`Last time you used ${ST.k0}. Pick a different number.`};
+          if((t===B.n+k&&t!==B.n*k)||(b===B.d+k&&b!==B.d*k))return{msg:`That’s adding. Adding changes the amount! Multiply instead: ${B.n} × ${k} for the top, ${B.d} × ${k} for the bottom.`};
+          if(t!==B.n*k&&b!==B.d*k)return{msg:`Use the same number ${k} on the top and the bottom. Top: ${B.n} × ${k} = ?`};
           if(t!==B.n*k)return{msg:`Top: ${B.n} × ${k} = ?`};if(b!==B.d*k)return{msg:`Bottom: ${B.d} × ${k} = ?`};
           if(idx===0){ST.k0=k;ST.strats.push('times')}
           const tn=document.getElementById('f'+idx+'n'),td=document.getElementById('f'+idx+'d');if(tn)tn.value=t;if(td)td.value=b;
