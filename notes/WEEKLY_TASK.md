@@ -69,3 +69,8 @@ PR title: `Week of <date>: <one-line focus>`. Body, written for a parent:
 
 Still open the PR as a draft explaining the problem. If you can't push, write
 the explanation to `miomathlab-progress/NEEDS-DEB.md`.
+
+## 6. If the site doesn't update after the merge
+
+GitHub Pages sometimes leaves the deploy job stuck on "waiting" and it can't be
+cancelled or re-run. Merging any new commit to main starts a fresh deploy.
