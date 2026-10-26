@@ -74,3 +74,8 @@ the explanation to `miomathlab-progress/NEEDS-DEB.md`.
 
 GitHub Pages sometimes leaves the deploy job stuck on "waiting" and it can't be
 cancelled or re-run. Merging any new commit to main starts a fresh deploy.
+
+## 7. Cloud runs
+In the cloud, the repos are checked out under ~/ (for example /home/user/miomathlab)
+instead of ~/Documents/GitHub. If the inbox is empty and there are no new
+snapshots, write "no data arrived" in PROGRESS.md and open a draft PR.
