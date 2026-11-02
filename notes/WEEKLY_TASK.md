@@ -8,6 +8,9 @@ Repos (both cloned under ~/Documents/GitHub):
 - **miomathlab-progress** (private): Mio's data. Weekly inbox, snapshots, and
   the long-term progress report. Never copy her data into the public repo.
 
+Cloud runs: the repos are checked out under /home/user instead, and the PR is
+opened with whatever GitHub tool the session has (gh may be missing).
+
 ## 1. Read the brief
 
 Read `miomathlab/GOALS.md` first. Use the fraction-lab-update skill for how the
