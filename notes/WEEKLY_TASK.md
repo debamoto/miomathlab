@@ -74,3 +74,9 @@ the explanation to `miomathlab-progress/NEEDS-DEB.md`.
 
 GitHub Pages sometimes leaves the deploy job stuck on "waiting" and it can't be
 cancelled or re-run. Merging any new commit to main starts a fresh deploy.
+
+## 7. Housekeeping for no-data weeks
+
+If the inbox is empty, earlier no-data draft PRs may still be open. They only
+touch this notes file, so they can be closed unmerged; the newest one carries
+the same note.
