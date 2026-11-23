@@ -26,6 +26,8 @@ app is built, tested, and shipped.
   - **Worksheet photos:** note the lesson, the skill, and her mistakes.
   - **Deb's notes:** anything she observed.
 - If the inbox is empty, use the latest snapshot and say so.
+- If several weeks in a row have no data, don't stack new no-data PRs: say in the
+  new PR which older no-data drafts can be closed unmerged.
 
 ## 3. Update the long-term progress report
 
